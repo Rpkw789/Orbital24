@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     }
 })
 
-export default function Loginscreen({ navigation }) {
+export default function Loginscreen({ }) {
 
     const router = useRouter();
 
@@ -53,7 +53,7 @@ export default function Loginscreen({ navigation }) {
         const { email, pwd } = values
 
         signInWithEmailAndPassword(auth, email, pwd)
-            .then(() => { alert("done")
+            .then(() => { router.push("home");
             })
             .catch((error) => {
                 alert(error.message)

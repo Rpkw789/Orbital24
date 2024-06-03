@@ -63,6 +63,7 @@ export default function SignUpScreen({ }) {
             createUserWithEmailAndPassword(auth, email, pwd)
                 .then(() => {
                     //firestore().collection('users').doc("users").add({type: role});
+                    router.push("home");
                 })
                 .catch((error) => {
                     alert(error.message)
@@ -79,7 +80,7 @@ export default function SignUpScreen({ }) {
         <TextBox placeholder="Email Address" onChangeText={text => handleChange(text, "email")} />
         <TextBox placeholder="Who are you? (Student or Teacher)" onChangeText={text => handleChange(text, "role")}/>
         <TextBox placeholder="Password" secureTextEntry={true}  onChangeText={text => handleChange(text, "pwd")}/>
-        <TextBox placeholder="Confirme Password" secureTextEntry={true}  onChangeText={text => handleChange(text, "pwd2")}/>
+        <TextBox placeholder="Confirm Password" secureTextEntry={true}  onChangeText={text => handleChange(text, "pwd2")}/>
         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "92%", }}>
             <Btn onClick={() => SignUp()} title="Sign Up" style={{ width: "48%" }} />
             <Btn onClick={() => router.push("login")} title="Login" style={{ width: "48%", backgroundColor: "#344869" }} />

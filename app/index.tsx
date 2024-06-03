@@ -27,7 +27,7 @@ export default function start() {
         </Text>
       </View>
       <View style = {styles.button}>
-        <Button title="Sign up" color="#86A49C"/>
+        <Button title="Sign up" color="#86A49C" onPress={() => router.push("./signup")}/>
       </View>
       </View>
     </ScrollView>
