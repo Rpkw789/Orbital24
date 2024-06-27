@@ -42,7 +42,7 @@ export default function Loginscreen({ }) {
         const { email, pwd } = values
 
         signInWithEmailAndPassword(auth, email, pwd)
-            .then(() => { router.push("home");
+            .then(() => { router.push("profilepage");
             })
             .catch((error) => {
                 alert(error.message)
