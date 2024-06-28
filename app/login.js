@@ -6,7 +6,7 @@ import { initializeApp } from '@firebase/app';
 import "firebase/auth";
 import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut} from '@firebase/auth';
 import { useRouter } from 'expo-router';
-import { app } from '../authkey';
+import { app } from '../firebaseConfig';
 
 const styles = StyleSheet.create({
     view: {

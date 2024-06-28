@@ -4,7 +4,7 @@ import TextBox from "../components/TextBox"
 import Btn from "../components/Btn"
 import {getAuth, createUserWithEmailAndPassword} from '@firebase/auth';
 import { useRouter } from 'expo-router';
-import { app } from '../authkey'
+import { app } from '../firebaseConfig'
 
 const styles = StyleSheet.create({
     view: {
