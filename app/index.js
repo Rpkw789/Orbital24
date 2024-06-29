@@ -19,7 +19,7 @@ export default function start() {
           </Text>
       </View>
       <View style= {styles.button}>
-        <Button title="Log in" color="#86A49C" onPress={() => router.push("./profilepage")}/>
+        <Button title="Log in" color="#86A49C" onPress={() => router.push("./login")}/>
       </View>
       <View>
         <Text style= {styles.smalltext}>

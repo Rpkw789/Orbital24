@@ -3,36 +3,58 @@ import Btn from "../components/Btn"
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/AntDesign';
 import React, { useEffect, useState } from 'react';
-import { addDoc, getDocs, collection } from 'firebase/firestore';
 import { firestore } from '../firebaseConfig';
+import { addDoc, getDocs, collection } from 'firebase/firestore';
 
-const profilepage = () => {
+const ProfilePage = () => {
     const router = useRouter();
-    const [users, setUsers] = useState([]);
+    const [userData, setUserData] = useState(null);
+    const [notes, setNotes] = useState([]);
 
     useEffect(() => {
-        const fetchData = async () => {
-            const userData = {
-                name: "ania",
-                age: 69,
-                email: "tania@gmail.com"
-            };
-
-            const addUserData = async () => {
-                try {
-                    const docRef = await addDoc(collection(firestore, 'users'), userData);
-                    console.log("Document written with ID: ", docRef.id);
-                } catch (e) {
-                    console.error("Error adding document: ", e);
-                }
-            };
-            addUserData();
-
-            const querySnapshot = await getDocs(collection(firestore, 'users'));
-            setUsers(querySnapshot.docs.map(doc => doc.data()));
+        const fetchUserData = async () => {
+            try {
+                const userRef = collection(firestore, 'users');
+                const userDoc = await addDoc(userRef, {
+                    name: "Ania",
+                    age: 17,
+                    email: "ania@example.com"
+                    // Add any other fields you want to save for the user
+                });
+                console.log("User document created with ID: ", userDoc.id);
+                
+                // Fetch user data after creation
+                const userSnapshot = await userDoc.get();
+                setUserData(userSnapshot.data());
+            } catch (error) {
+                console.error('Error adding user document:', error);
+            }
         };
 
-        fetchData();
+        const fetchNotesData = async () => {
+            try {
+                // Collection reference for notes
+                const notesRef = collection(firestore, 'notes');
+
+                // Example: Adding a note for the user
+                const noteDoc = await addDoc(notesRef, {
+                    userId: "USER_ID", // Replace with actual user ID or reference user document
+                    title: "Sample Note",
+                    content: "This is a sample note content."
+                });
+                console.log("Note document created with ID: ", noteDoc.id);
+
+                // Fetch notes data
+                const notesSnapshot = await notesRef.get();
+                const notesData = notesSnapshot.docs.map(doc => doc.data());
+                setNotes(notesData);
+            } catch (error) {
+                console.error('Error fetching notes:', error);
+            }
+        };
+
+        fetchUserData();
+        fetchNotesData();
     }, []);
 
     return (
@@ -45,55 +67,48 @@ const profilepage = () => {
                     />
                 </View>
                 <View style={styles.userinfo}>
-                    <Text style={styles.usertext}>hi</Text>
-                    <Text style={styles.usertext}>Age: 17</Text>
-                    <Text style={styles.usertext}>School: ACJC</Text>
+                    <Text style={styles.usertext}>Name: {userData ? userData.name : 'Loading...'}</Text>
+                    <Text style={styles.usertext}>Age: {userData ? userData.age : 'Loading...'}</Text>
+                    <Text style={styles.usertext}>Email: {userData ? userData.email : 'Loading...'}</Text>
                 </View>
                 <View style={styles.editprofilebutton}>
-                    <Btn onClick={() => router.push("./editprofilepage")}
-                        title="Edit profile" style={{ width: "100%", backgroundColor: "#344869" }} />
+                    <Btn
+                        onClick={() => router.push("./editprofilepage")}
+                        title="Edit profile"
+                        style={{ width: "100%", backgroundColor: "#344869" }}
+                    />
                 </View>
             </View>
             <Text style={{ fontSize: 20, marginTop: 20, marginLeft: 10, marginBottom: 20 }}>
                 My notes
             </Text>
             <View>
-                <TouchableOpacity style={styles.button} onPress={null}>
-                    <View>
-                        <Text style={styles.foldername}>
-                            English
-                        </Text>
-                    </View>
-
-                    <View style={{ length: 25 }}>
-                        <Icon name="right" size={20} color="white" />
-                    </View>
-
-
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={null}>
-                    <Text style={styles.foldername}>
-                        math
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={null}>
-                    <Text style={styles.foldername}>
-                        chem
-                    </Text>
-                </TouchableOpacity>
-
+                {/* Display notes dynamically */}
+                {notes.map((note, index) => (
+                    <TouchableOpacity
+                        key={index}
+                        style={styles.button}
+                        onPress={() => {/* Implement onPress functionality */}}
+                    >
+                        <View>
+                            <Text style={styles.foldername}>
+                                {note.title}
+                            </Text>
+                        </View>
+                        <View style={{ length: 25 }}>
+                            <Icon name="right" size={20} color="white" />
+                        </View>
+                    </TouchableOpacity>
+                ))}
             </View>
         </ScrollView>
     )
 };
 
-
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#F9EDE3",
-
     },
     Avatarcontainer: {
         backgroundColor: "#F5CAC2",
@@ -102,7 +117,7 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     profilepic: {
-        alignItems: 'centre'
+        alignItems: 'center'
     },
     avatarimage: {
         borderRadius: 60,
@@ -124,7 +139,8 @@ const styles = StyleSheet.create({
         height: 50,
         justifyContent: 'center',
         flexDirection: 'row',
-        flex: 2
+        flex: 2,
+        marginBottom: 10,
     },
     editprofilebutton: {
         alignContent: 'center',
@@ -134,7 +150,6 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         fontSize: 15
     },
-
 });
 
-export default profilepage;
+export default ProfilePage;
