@@ -21,10 +21,10 @@ const ProfilePage = () => {
                     const userData = userDoc.data();
                     setUserData(userData);
                 } else {
-                    //TO-DO
+                    // TO-DO: Handle case where user document doesn't exist
                 }
             } catch (error) {
-                console.error('Error adding user document:', error);
+                console.error('Error fetching user document:', error);
             }
         };
 
@@ -44,6 +44,13 @@ const ProfilePage = () => {
 
     return (
         <ScrollView style={styles.container}>
+            <View style={styles.editprofilebutton}>
+                <TouchableOpacity onPress={() => router.push("./editprofile")} style={styles.edit}>
+                    <Text style={{ color: "#86A49C", textDecorationLine: 'underline', fontSize: 15 }}>
+                        Edit Profile
+                    </Text>
+                </TouchableOpacity>
+            </View>
             <View style={styles.Avatarcontainer}>
                 <View style={styles.profilepic}>
                     <Image
@@ -56,13 +63,6 @@ const ProfilePage = () => {
                     <Text style={styles.usertext}>Age: {userData ? userData.age : 'Loading...'}</Text>
                     <Text style={styles.usertext}>School: {userData ? userData.school : 'Loading...'}</Text>
                 </View>
-                <View style={styles.editprofilebutton}>
-                    <Btn
-                        onClick={() => router.push("./editprofile")}
-                        title="Edit profile"
-                        style={{ width: "100%", backgroundColor: "#344869" }}
-                    />
-                </View>
             </View>
             <Text style={{ fontSize: 20, marginTop: 20, marginLeft: 10, marginBottom: 20 }}>
                 My notes
@@ -73,15 +73,13 @@ const ProfilePage = () => {
                     <TouchableOpacity
                         key={index}
                         style={styles.button}
-                        onPress={() => {/* Implement onPress functionality */}}
+                        onPress={() => {/* Implement onPress functionality */ }}
                     >
-                        <View>
-                            <Text style={styles.foldername}>
-                                {note.title}
-                            </Text>
-                        </View>
-                        <View style={{ length: 25 }}>
-                            <Icon name="right" size={20} color="white" />
+                        <Text style={styles.foldername}>
+                            {note.title}
+                        </Text>
+                        <View style={styles.iconContainer}>
+                            <Icon name="right" size={20} color="black"/>
                         </View>
                     </TouchableOpacity>
                 ))}
@@ -98,21 +96,22 @@ const styles = StyleSheet.create({
     Avatarcontainer: {
         backgroundColor: "#F5CAC2",
         flexDirection: 'row',
-        height: 200,
-        padding: 20,
+        height: 130,
+        paddingHorizontal: 20,
+        alignContent: "center"
     },
     profilepic: {
-        alignItems: 'center'
+        alignItems: 'center',
+        width: 100
     },
     avatarimage: {
         borderRadius: 60,
-        height: 120,
-        width: 120,
-        marginTop: 20
+        height: 100,
+        width: 100,
+        marginTop: 13
     },
     usertext: {
         fontSize: 20,
-        marginTop: 10,
     },
     userinfo: {
         alignItems: 'left',
@@ -120,21 +119,29 @@ const styles = StyleSheet.create({
         marginTop: 30,
     },
     button: {
-        backgroundColor: "grey",
-        height: 50,
-        justifyContent: 'center',
+        backgroundColor: "#FFE2B7",
+        padding: 10,
         flexDirection: 'row',
-        flex: 2,
         marginBottom: 10,
+        alignItems: "center"
     },
     editprofilebutton: {
-        alignContent: 'center',
-        marginTop: 20
+        alignItems: "flex-end", // Aligns the Edit Profile button to the right
+        backgroundColor: "#F5CAC2",
+        paddingTop: 5,
+        paddingRight: 10
     },
     foldername: {
-        paddingLeft: 10,
-        fontSize: 15
+        fontSize: 15,
+        flex: 1 // Ensures text takes remaining space before icon
     },
+    iconContainer: {
+        flex: 0, // Ensures the icon container does not grow and stays fixed
+        marginLeft: 'auto' // Moves the icon container to the far right
+    },
+    edit: {
+        alignSelf: 'flex-end',
+    }
 });
 
 export default ProfilePage;
