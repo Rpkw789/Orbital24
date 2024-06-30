@@ -35,7 +35,7 @@ const Homepage = () => {
                 </View>
                 <View style={styles.div2}>
                     <Text style ={{fontSize: 18, color:"black", marginTop: 20}}>
-                        Browse for...
+                        Browse for
                     </Text>
                     <AnimatedTabSlider/>
                 </View>
