@@ -1,11 +1,11 @@
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import Btn from "../components/Btn"
+import Btn from "../../components/Btn"
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/AntDesign';
 import React, { useEffect, useState } from 'react';
-import { firestore, storage } from '../firebaseConfig';
+import { firestore, storage } from '../../firebaseConfig';
 import { getDoc, collection, doc } from 'firebase/firestore';
-import { getPdfImage, getPdfsDownloadURLs } from '../functions/storage';
+import { getPdfImage, getPdfsDownloadURLs } from '../../functions/storage';
 
 const ProfilePage = () => {
     const router = useRouter();
@@ -58,7 +58,7 @@ const ProfilePage = () => {
                 </View>
                 <View style={styles.editprofilebutton}>
                     <Btn
-                        onClick={() => router.push("./editprofilepage")}
+                        onClick={() => router.push("./editprofile")}
                         title="Edit profile"
                         style={{ width: "100%", backgroundColor: "#344869" }}
                     />

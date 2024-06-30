@@ -2,9 +2,7 @@ import React, { useState } from 'react'
 import { Text, View, StyleSheet } from "react-native"
 import TextBox from "../components/TextBox"
 import Btn from "../components/Btn"
-import { initializeApp } from '@firebase/app';
-import "firebase/auth";
-import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut} from '@firebase/auth';
+import {getAuth, signInWithEmailAndPassword} from '@firebase/auth';
 import { useRouter } from 'expo-router';
 import { app } from '../firebaseConfig';
 
@@ -42,7 +40,7 @@ export default function Loginscreen({ }) {
         const { email, pwd } = values
 
         signInWithEmailAndPassword(auth, email, pwd)
-            .then(() => { router.push("profilepage");
+            .then(() => { router.push("/(tabs)/home");
             })
             .catch((error) => {
                 alert(error.message)

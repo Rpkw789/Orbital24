@@ -31,7 +31,7 @@ export default function start() {
       </View>
       </View>
       <View style = {styles.fastButton}>
-        <Button title="skip to ur working page" color="#86A49C" onPress={() => router.push("./profilepage")}/>
+        <Button title="skip to ur working page" color="#86A49C" onPress={() => router.push("/(tabs)/NotesMarket")}/>
       </View>
     </ScrollView>
   );

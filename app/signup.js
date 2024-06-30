@@ -46,7 +46,7 @@ export default function SignUpScreen({ }) {
             createUserWithEmailAndPassword(auth, email, pwd)
                 .then(() => {
                     //firestore().collection('users').doc("users").add({type: role});
-                    router.push("home");
+                    router.push("/(tabs)/home");
                 })
                 .catch((error) => {
                     alert(error.message)

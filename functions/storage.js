@@ -1,6 +1,4 @@
 import { getStorage, ref, uploadBytes, getDownloadURL, listAll, getMetadata } from 'firebase/storage';
-import { PDFDocument, PDFPage } from 'react-native-pdf-lib';
-//import RNFetchBlob from 'rn-fetch-blob';
 
 const storage = getStorage();
 
@@ -29,37 +27,19 @@ export async function getPdfsDownloadURLs(folderPath) {
             listResult.items.map(async (itemRef) => {
                 const url = await getDownloadURL(itemRef);
                 const title = itemRef.name;
-                const image = getPdfImage(url);
 
                 return {
                     url: url,
                     title: title,
-                    image: image,
                 };
             })
         );
 
-        //console.log('Download URLs:', downloadURLs);
+        console.log('Download URLs:', downloadURLs);
         return downloadURLs;
     } catch (error) {
         console.error('Failed to get download URLS:', error);
         return [];
     }
-}
-
-export async function getPdfImage(pdfURL) {
-    const pdfDoc = await PDFDocument.load(pdfURL);
-
-    const page1 = await pdfDoc.getPage(1);
-
-    const page1Image = await page1.render({
-        width: page1.width * 2,
-        height: page1.height * 2,
-        background: '#ffffff',
-    });
-
-    console.log('Image Format:', typeof page1Image);
-
-    return page1Image;
 }
 

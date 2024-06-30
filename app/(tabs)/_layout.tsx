@@ -4,17 +4,10 @@ const TabsLayout = () => {
   return (
     <Tabs>
       <Tabs.Screen
-        name="home"
+        name="NotesMarket"
         options={{
           headerTitle: "Home Page",
           title: "Home",
-        }}
-      />
-      <Tabs.Screen
-        name="upload"
-        options={{
-          headerTitle: "+",
-          title: "+",
         }}
       />
       <Tabs.Screen
@@ -22,6 +15,18 @@ const TabsLayout = () => {
         options={{
           headerTitle: "Profile",
           title: "Profile",
+        }}
+      />
+      <Tabs.Screen
+        name="editprofile"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="TutorMarket"
+        options={{
+          href: null,
         }}
       />
     </Tabs>
