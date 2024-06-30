@@ -1,24 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import Btn from "../components/Btn";
 import { useRouter } from 'expo-router';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, collection, getDoc } from 'firebase/firestore';
 import { firestore } from '../firebaseConfig';
 
-const EditProfilePage = ({ userData }) => {
+const EditProfilePage = () => {
     const router = useRouter();
-    const [name, setName] = useState(userData.name);
-    const [age, setAge] = useState(userData.age);
-    const [email, setEmail] = useState(userData.email);
+    const [name, setName] = useState(null);
+    const [age, setAge] = useState(null);
+    const [email, setEmail] = useState(null);
+    const [school, setSchool] = useState(null);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const userDocRef = doc(collection(firestore, 'users'), "ranen");
+                const userDoc = await getDoc(userDocRef);
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    setName(userData.name);
+                    setAge(userData.age);
+                    setEmail(userData.email);
+                    setSchool(userData.school);
+                } else {
+                    //TO-DO
+                }
+            } catch (error) {
+                console.error('Error adding user document:', error);
+            }
+        };
+        fetchUserData();
+    }, [firestore]);
 
     const handleSaveChanges = async () => {
         try {
-            const userRef = doc(firestore, 'users', userData.id); // Assuming userData.id is the document ID of the current user
-            await setDoc(userRef, {
+            const userDocRef = doc(collection(firestore, 'users'), "ranen"); // Assuming userData.id is the document ID of the current user
+            await setDoc(userDocRef, {
                 name: name,
                 age: age,
-                email: email
-                // Add any other fields you want to update
+                email: email,
+                school: school
             }, { merge: true }); // Merge option ensures existing data is not overwritten completely
 
             router.push("./profilepage"); // Navigate back to the profile page after saving changes
