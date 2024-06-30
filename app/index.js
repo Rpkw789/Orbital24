@@ -30,6 +30,9 @@ export default function start() {
         <Button title="Sign up" color="#86A49C" onPress={() => router.push("./signup")}/>
       </View>
       </View>
+      <View style = {styles.fastButton}>
+        <Button title="skip to ur working page" color="#86A49C" onPress={() => router.push("./profilepage")}/>
+      </View>
     </ScrollView>
   );
 }
@@ -57,7 +60,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 80,
     fontSize: 50,
-    fontFamily: "LobsterTwoItalic",
+    //fontFamily: "LobsterTwoItalic",
     color: "#F7BE61"
   },
   smalltext:{
@@ -65,5 +68,15 @@ const styles = StyleSheet.create({
     marginLeft: 30,
     marginTop: 10,
     color: "#F7BE61"
+  },
+  fastButton: {
+    top: 10,
+    marginLeft: 30,
+    marginRight: 60,
+    alignItems: "flex-start", // changed
+    paddingLeft: 10,
+    fontSize: 40,
+    borderRadius: 10,
+    height: 50,
   }
 });

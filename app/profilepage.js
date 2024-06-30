@@ -3,8 +3,9 @@ import Btn from "../components/Btn"
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/AntDesign';
 import React, { useEffect, useState } from 'react';
-import { firestore } from '../firebaseConfig';
-import { addDoc, getDocs, collection } from 'firebase/firestore';
+import { firestore, storage } from '../firebaseConfig';
+import { getDoc, collection, doc } from 'firebase/firestore';
+import { getPdfImage, getPdfsDownloadURLs } from '../functions/storage';
 
 const ProfilePage = () => {
     const router = useRouter();
@@ -14,18 +15,14 @@ const ProfilePage = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const userRef = collection(firestore, 'users');
-                const userDoc = await addDoc(userRef, {
-                    name: "Ania",
-                    age: 17,
-                    email: "ania@example.com"
-                    // Add any other fields you want to save for the user
-                });
-                console.log("User document created with ID: ", userDoc.id);
-                
-                // Fetch user data after creation
-                const userSnapshot = await userDoc.get();
-                setUserData(userSnapshot.data());
+                const userDocRef = doc(collection(firestore, 'users'), "ranen");
+                const userDoc = await getDoc(userDocRef);
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    setUserData(userData);
+                } else {
+                    //TO-DO
+                }
             } catch (error) {
                 console.error('Error adding user document:', error);
             }
@@ -33,21 +30,9 @@ const ProfilePage = () => {
 
         const fetchNotesData = async () => {
             try {
-                // Collection reference for notes
-                const notesRef = collection(firestore, 'notes');
-
-                // Example: Adding a note for the user
-                const noteDoc = await addDoc(notesRef, {
-                    userId: "USER_ID", // Replace with actual user ID or reference user document
-                    title: "Sample Note",
-                    content: "This is a sample note content."
-                });
-                console.log("Note document created with ID: ", noteDoc.id);
-
-                // Fetch notes data
-                const notesSnapshot = await notesRef.get();
-                const notesData = notesSnapshot.docs.map(doc => doc.data());
-                setNotes(notesData);
+                const folderPath = 'gs://edusell-460f4.appspot.com/Users/ranen/notes';
+                const urls = await getPdfsDownloadURLs(folderPath);
+                setNotes(urls);
             } catch (error) {
                 console.error('Error fetching notes:', error);
             }
@@ -55,7 +40,7 @@ const ProfilePage = () => {
 
         fetchUserData();
         fetchNotesData();
-    }, []);
+    }, [firestore]);
 
     return (
         <ScrollView style={styles.container}>
@@ -69,7 +54,7 @@ const ProfilePage = () => {
                 <View style={styles.userinfo}>
                     <Text style={styles.usertext}>Name: {userData ? userData.name : 'Loading...'}</Text>
                     <Text style={styles.usertext}>Age: {userData ? userData.age : 'Loading...'}</Text>
-                    <Text style={styles.usertext}>Email: {userData ? userData.email : 'Loading...'}</Text>
+                    <Text style={styles.usertext}>School: {userData ? userData.school : 'Loading...'}</Text>
                 </View>
                 <View style={styles.editprofilebutton}>
                     <Btn
