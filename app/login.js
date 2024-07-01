@@ -41,7 +41,7 @@ export default function Loginscreen({ }) {
         const { email, pwd } = values
 
         signInWithEmailAndPassword(auth, email, pwd)
-            .then(() => { router.push("/(tabs)/home");
+            .then(() => { router.push("/(tabs)/NotesMarket");
             })
             .catch((error) => {
                 alert(error.message)
