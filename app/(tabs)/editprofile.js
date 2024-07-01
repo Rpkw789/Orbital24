@@ -77,7 +77,7 @@ const EditProfilePage = () => {
                 title="Save Changes"
                 style={styles.saveButton}
             />
-            <TouchableOpacity onPress={() => router.push("./profilepage")} style={styles.cancelButton}>
+            <TouchableOpacity onPress={() => router.push("./profile")} style={styles.cancelButton}>
                 <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
         </View>

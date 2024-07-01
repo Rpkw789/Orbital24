@@ -27,6 +27,7 @@ const TabsLayout = () => {
         name="TutorMarket"
         options={{
           href: null,
+          headerTitle: "Home Page",
         }}
       />
     </Tabs>

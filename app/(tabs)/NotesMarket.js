@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, TextInput, Text, Image } from 'react-native';
 import Homepage from '../../components/homepage';
-import { resumeDownload } from 'react-native-fs';
 
 const NotesMarket = () => {
     return (

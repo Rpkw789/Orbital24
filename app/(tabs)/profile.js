@@ -1,46 +1,48 @@
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import Btn from "../../components/Btn"
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/AntDesign';
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { firestore, storage } from '../../firebaseConfig';
-import { getDoc, collection, doc } from 'firebase/firestore';
+import { getDoc, doc, collection } from 'firebase/firestore';
 import { getPdfImage, getPdfsDownloadURLs } from '../../functions/storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 const ProfilePage = () => {
     const router = useRouter();
     const [userData, setUserData] = useState(null);
     const [notes, setNotes] = useState([]);
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const userDocRef = doc(collection(firestore, 'users'), "ranen");
-                const userDoc = await getDoc(userDocRef);
-                if (userDoc.exists()) {
-                    const userData = userDoc.data();
-                    setUserData(userData);
-                } else {
-                    // TO-DO: Handle case where user document doesn't exist
-                }
-            } catch (error) {
-                console.error('Error fetching user document:', error);
+    const fetchUserData = async () => {
+        try {
+            const userDocRef = doc(collection(firestore, 'users'), "ranen");
+            const userDoc = await getDoc(userDocRef);
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                setUserData(userData);
+            } else {
+                // TO-DO: Handle case where user document doesn't exist
             }
-        };
+        } catch (error) {
+            console.error('Error fetching user document:', error);
+        }
+    };
 
-        const fetchNotesData = async () => {
-            try {
-                const folderPath = 'gs://edusell-460f4.appspot.com/Users/ranen/notes';
-                const urls = await getPdfsDownloadURLs(folderPath);
-                setNotes(urls);
-            } catch (error) {
-                console.error('Error fetching notes:', error);
-            }
-        };
+    const fetchNotesData = async () => {
+        try {
+            const folderPath = 'gs://edusell-460f4.appspot.com/Users/ranen/notes';
+            const urls = await getPdfsDownloadURLs(folderPath);
+            setNotes(urls);
+        } catch (error) {
+            console.error('Error fetching notes:', error);
+        }
+    };
 
-        fetchUserData();
-        fetchNotesData();
-    }, [firestore]);
+    useFocusEffect(
+        useCallback(() => {
+            fetchUserData();
+            fetchNotesData();
+        }, [])
+    );
 
     return (
         <ScrollView style={styles.container}>
