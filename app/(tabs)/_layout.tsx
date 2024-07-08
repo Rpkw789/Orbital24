@@ -1,4 +1,5 @@
 import { Tabs } from "expo-router";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const TabsLayout = () => {
   return (
@@ -8,6 +9,9 @@ const TabsLayout = () => {
         options={{
           headerTitle: "Home Page",
           title: "Home",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home" color={color} size={size} />
+          ),
         }}
       />
       <Tabs.Screen
@@ -15,6 +19,9 @@ const TabsLayout = () => {
         options={{
           headerTitle: "Profile",
           title: "Profile",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person" color={color} size={size} />
+          ),
         }}
       />
       <Tabs.Screen
