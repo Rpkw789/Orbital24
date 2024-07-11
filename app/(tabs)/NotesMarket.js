@@ -1,67 +1,63 @@
-import React from 'react';
-import { View, StyleSheet, ScrollView, Text, Image } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, StyleSheet, ScrollView, Text, Image, TouchableOpacity} from 'react-native';
 import Homepage from '../../components/homepage';
+import { firestore } from '../../firebaseConfig';
+import { getDocs, collection } from '@firebase/firestore';
+import { useFocusEffect } from '@react-navigation/native'; 
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation
+import { FlatList } from 'react-native';
 
 const NotesMarket = () => {
+    const [notesData, setNotesData] = useState([]);
+    const navigation = useNavigation(); // Use useNavigation hook
+
+    const fetchNotesData = async () => {
+        try {
+            const notesDocsRef = collection(firestore, 'notes');
+            const notesDocs = await getDocs(notesDocsRef);
+            const notes = notesDocs.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setNotesData(notes);
+        } catch (e) {
+            console.error('Error fetching notes collection:', e);
+        }
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchNotesData();
+        }, [])
+    );
+
+
+    const renderNote = (note) => (
+        <TouchableOpacity style={styles.placeholder} onPress={() => navigation.navigate('NotesDetails', {note})}>
+            <Image source={{ uri: note.image }} style={styles.pic} />
+            <Text style={styles.title}>{note.name}</Text>
+            <Text style={styles.price}>{note.price}</Text>
+            <Text style={styles.author}>{note.author}</Text>
+        </TouchableOpacity>
+    );
+
+    const renderRow = (note1, note2) => (
+        <View style={styles.bytwo}>
+            {renderNote(note1)}
+            {renderNote(note2)}
+        </View>
+    );
+
     return (
         <ScrollView style={styles.container}>
-            <Homepage/>
-
-            <View style={styles.lowercontainer}>
-                <View style={styles.bytwo}>
-                    <View style={styles.placeholder}>
-                        <Image source={require('@/assets/images/bunny.png')} style={styles.pic} />
-                        <Text style={styles.title}>
-                            Sec 2 Bio IP notes
-                        </Text>
-                        <Text style={styles.price}>
-                            $3.90
-                        </Text>
-                        <Text style={styles.author}>
-                            Alissa Tay
-                        </Text>
+            <Homepage />
+            {notesData.map((note, index) => (
+                index % 2 === 0 && notesData[index + 1] ? (
+                    <View style={styles.lowercontainer} key={note.id}>
+                        {renderRow(note, notesData[index + 1])}
                     </View>
-                    <View style={styles.placeholder}>
-                        <Image source={require('@/assets/images/j1.png')} style={styles.pic} />
-                        <Text style={styles.title}>
-                            A level Pure Mathematics
-                        </Text>
-                        <Text style={styles.price}>
-                            $5
-                        </Text>
-                        <Text style={styles.author}>
-                            Mr. Poh
-                        </Text>
-                    </View>
-                </View>
-
-                <View style={styles.bytwo}>
-                    <View style={styles.placeholder}>
-                        <Image source={require('@/assets/images/hist.png')} style={styles.pic} />
-                        <Text style={styles.title}>
-                            GCE O level Upper Sec History 
-                        </Text>
-                        <Text style={styles.price}>
-                            $10.40
-                        </Text>
-                        <Text style={styles.author}>
-                            Melissa
-                        </Text>
-                    </View>
-                    <View style={styles.placeholder}>
-                        <Image source={require('@/assets/images/prisch.png')} style={styles.pic} />
-                        <Text style={styles.title}>
-                            P3 & 4 Science
-                        </Text>
-                        <Text style={styles.price}>
-                            $7
-                        </Text>
-                        <Text style={styles.author}>
-                            Science ShiFu
-                        </Text>
-                    </View>
-                </View>
-            </View>
+                ) : null
+            ))}
         </ScrollView>
     );
 };
@@ -70,11 +66,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#F9EDE3"
-    },
-  
-    headerText: {
-        fontSize: 24,
-        fontWeight: 'bold',
     },
     lowercontainer: {
         padding: 10,
@@ -99,7 +90,6 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 200,
         marginBottom: 10,
-
     },
     title: {
         fontSize: 16,
