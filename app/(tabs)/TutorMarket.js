@@ -7,20 +7,31 @@ import SubjectCard from '../../components/SubjectCard';
 import BackButton from '../../components/BackTutorFolder';
 import { firestore } from '../../firebaseConfig';
 import { getDocs, collection } from '@firebase/firestore';
+import { useNavigation } from '@react-navigation/native'; 
 
 const TutorMarket = () => {
 
     const [tutorsData, setTutorsData] = useState([]);
     const [path, setPath] = useState('tutors');
     const [isTitle, setIsTitle] = useState(true);
+    const navigation = useNavigation();
 
     const fetchTutorData = async () => {
         try {
             const tutorDocsRef = collection(firestore, path);
             const tutorDocs = await getDocs(tutorDocsRef);
-            const tutors = tutorDocs.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
+            const tutors = await Promise.all(tutorDocs.docs.map(async doc => {
+                const reviewsDocsRef = collection(firestore, `${path}/${doc.id}/reviews`);
+                const reviewsDocs = await getDocs(reviewsDocsRef);
+                const reviews = reviewsDocs.docs.map(rDoc => ({
+                    id: rDoc.id,
+                    ...rDoc.data()
+                }));
+                return {
+                    id: doc.id,
+                    ...doc.data(),
+                    reviews: reviews
+                };
             }));
             setTutorsData(tutors);
             console.log(path);
@@ -30,7 +41,7 @@ const TutorMarket = () => {
     }
 
     const handleTutorPress = (tutor) => {
-        Alert.alert("Tutor Selected", `You selected ${tutor.name}`);
+        navigation.navigate('TutorDetails', {tutor});
     };
 
     const handleSubjectPress = (subject) => {

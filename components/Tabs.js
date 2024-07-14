@@ -11,7 +11,7 @@ const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpaci
 const { width } = Dimensions.get('window');
 const tabWidth = width / tabs.length;
 
-const AnimatedTabSlider = () => {
+const AnimatedTabSlider = (isNote) => {
   const router = useRouter(); // Hook into router object
   const [selectedIndex, setSelectedIndex] = useState(0);
   const translateX = new Animated.Value(selectedIndex * tabWidth);
