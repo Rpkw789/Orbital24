@@ -3,8 +3,9 @@ import { Text, View, StyleSheet } from "react-native"
 import TextBox from "../components/TextBox"
 import Btn from "../components/Btn"
 import {getAuth, signInWithEmailAndPassword} from '@firebase/auth';
-import { useRouter } from 'expo-router';
 import { app } from '../firebaseConfig';
+import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 
 const styles = StyleSheet.create({
     view: {
@@ -18,9 +19,9 @@ const styles = StyleSheet.create({
 
 export default function Loginscreen({ }) {
 
-    const router = useRouter();
-
+    const navigation = useNavigation();
     const auth = getAuth(app);
+    const router = useRouter();
 
     const [values, setValues] = useState({
         email: "",
@@ -41,11 +42,17 @@ export default function Loginscreen({ }) {
         const { email, pwd } = values
 
         signInWithEmailAndPassword(auth, email, pwd)
-            .then(() => { router.push("/(tabs)/NotesMarket");
+            .then((userCrediential) => {
+                const user = userCrediential.user;
+                if (user.role == 'student') {
+                    navigation.navigate('NotesMarket', {user});
+                } else {
+                    // ..
+                }
+                
             })
             .catch((error) => {
                 alert(error.message)
-                // ..
             });
     }
 

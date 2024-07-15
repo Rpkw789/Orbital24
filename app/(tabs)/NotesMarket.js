@@ -4,12 +4,13 @@ import Homepage from '../../components/homepage';
 import { firestore } from '../../firebaseConfig';
 import { getDocs, collection } from '@firebase/firestore';
 import { useFocusEffect } from '@react-navigation/native'; 
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation
-import { FlatList } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native'; // Import useNavigation
 
 const NotesMarket = () => {
     const [notesData, setNotesData] = useState([]);
     const navigation = useNavigation(); // Use useNavigation hook
+    const route = useRoute();
+    const { user } = route.params;
 
     const fetchNotesData = async () => {
         try {

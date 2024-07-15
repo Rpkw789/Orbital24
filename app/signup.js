@@ -4,8 +4,11 @@ import TextBox from "../components/TextBox"
 import Btn from "../components/Btn"
 import { getAuth, createUserWithEmailAndPassword } from '@firebase/auth';
 import { Picker } from '@react-native-picker/picker';
-import { useRouter } from 'expo-router';
 import { app } from '../firebaseConfig'
+import { useNavigation } from '@react-navigation/native';
+import { firestore } from '../firebaseConfig';
+import { doc, setDoc } from '@firebase/firestore';
+import { useRouter } from 'expo-router';
 
 const styles = StyleSheet.create({
     view: {
@@ -31,9 +34,9 @@ const styles = StyleSheet.create({
 
 export default function SignUpScreen({ }) {
 
-    const router = useRouter();
-
+    const navigation = useNavigation();
     const auth = getAuth(app);
+    const router = useRouter();
 
     const [values, setValues] = useState({
         name: "",
@@ -65,17 +68,25 @@ export default function SignUpScreen({ }) {
 
         if (pwd == pwd2) {
             createUserWithEmailAndPassword(auth, email, pwd)
-                .then(() => {
-                    //firestore().collection('users').doc("users").add({type: role});
-                    router.push("/(tabs)/NotesMarket");
+                .then((userCrediential) => {
+                    const user = userCrediential.user;
+                    createDatabaseFolderUser(user);
+                    navigation.navigate('NotesMarket', {user});
                 })
                 .catch((error) => {
-                    alert(error.message)
-                    // ..
+                    alert(error.message);
                 });
         } else {
             alert("Passwords are different!")
         }
+    }
+
+    function createDatabaseFolderUser(user) {
+        const docRef = doc(firestore, 'users', user.uid);
+        setDoc(docRef, {
+            name: values.name,
+            role: values.role
+        })
     }
 
     return <View style={styles.view}>
