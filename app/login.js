@@ -4,7 +4,6 @@ import TextBox from "../components/TextBox"
 import Btn from "../components/Btn"
 import {getAuth, signInWithEmailAndPassword} from '@firebase/auth';
 import { app } from '../firebaseConfig';
-import { useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 
 const styles = StyleSheet.create({
@@ -19,7 +18,6 @@ const styles = StyleSheet.create({
 
 export default function Loginscreen({ }) {
 
-    const navigation = useNavigation();
     const auth = getAuth(app);
     const router = useRouter();
 
@@ -45,9 +43,9 @@ export default function Loginscreen({ }) {
             .then((userCrediential) => {
                 const user = userCrediential.user;
                 if (user.role == 'student') {
-                    navigation.navigate('NotesMarket', {user});
+                    router.push('(tabs)/homepage');
                 } else {
-                    // ..
+                    router.push('(tabs)/homepage');
                 }
                 
             })

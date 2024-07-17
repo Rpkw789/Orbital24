@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
-import Btn from "../../components/Btn";
+import Btn from "../components/Btn";
 import { useRouter } from 'expo-router';
 import { doc, setDoc, collection, getDoc } from 'firebase/firestore';
-import { firestore } from '../../firebaseConfig';
+import { firestore } from '../firebaseConfig';
 
 const EditProfilePage = () => {
     const router = useRouter();

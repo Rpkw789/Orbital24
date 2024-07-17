@@ -9,22 +9,27 @@ const tabs = [
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 const { width } = Dimensions.get('window');
-const tabWidth = width / tabs.length;
+const tabWidth = (width - 20) / tabs.length;
 
-const AnimatedTabSlider = (isNote) => {
+const AnimatedTabSlider = ({setNoteOrTutor}) => {
   const router = useRouter(); // Hook into router object
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const translateX = new Animated.Value(selectedIndex * tabWidth);
+  const translateX = useState(new Animated.Value(0))[0];
 
   const handleTabPress = (index) => {
     setSelectedIndex(index);
     Animated.spring(translateX, {
-      toValue: index * tabWidth,
+      toValue: selectedIndex * tabWidth,
       useNativeDriver: true,
+      speed: 14,
+      bounciness: 2,
     }).start(() => {
       // After animation completes, navigate to corresponding screen based on index
-      console.log('Navigating to:', tabs[index].screen);
-      router.push(tabs[index].screen);
+      if (index == 0) {
+        setNoteOrTutor(true);
+      } else {
+        setNoteOrTutor(false);
+      }
     });
   };
 
@@ -67,7 +72,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC',
     borderRadius: 10,
-    marginTop: 10
+    marginTop: 10,
   },
   tabButton: {
     flex: 1,

@@ -5,7 +5,6 @@ import Btn from "../components/Btn"
 import { getAuth, createUserWithEmailAndPassword } from '@firebase/auth';
 import { Picker } from '@react-native-picker/picker';
 import { app } from '../firebaseConfig'
-import { useNavigation } from '@react-navigation/native';
 import { firestore } from '../firebaseConfig';
 import { doc, setDoc } from '@firebase/firestore';
 import { useRouter } from 'expo-router';
@@ -34,7 +33,6 @@ const styles = StyleSheet.create({
 
 export default function SignUpScreen({ }) {
 
-    const navigation = useNavigation();
     const auth = getAuth(app);
     const router = useRouter();
 
@@ -71,7 +69,7 @@ export default function SignUpScreen({ }) {
                 .then((userCrediential) => {
                     const user = userCrediential.user;
                     createDatabaseFolderUser(user);
-                    navigation.navigate('NotesMarket', {user});
+                    router.push('(tabs)/homepage');
                 })
                 .catch((error) => {
                     alert(error.message);

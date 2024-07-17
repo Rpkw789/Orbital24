@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, TextInput, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
-import AnimatedTabSlider from './Tabs';
+import AnimatedTabSlider from '../../components/Tabs';
+import NotesMarket from '../../components/NotesMarket';
+import TutorMarket from '../../components/TutorMarket';
+import { useNavigation } from '@react-navigation/native';
 
 const Homepage = () => {
     const [cartItemsCount, setCartItemsCount] = useState(0);
     const [chatCount, setChatCount] = useState(0);
+    const [isNoteOrTutor, setNoteTutor] = useState(true);
+    const navigation = useNavigation();
 
     return (
-       
+        <View style={styles.container}>
             <View style={styles.topdiv}>
                 <View style={styles.div1}>
                     <TextInput placeholder='Search...' clearButtonMode='always' style={styles.searchbar} />
@@ -33,14 +38,23 @@ const Homepage = () => {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View style={styles.div2}>
-                    <Text style ={{fontSize: 18, color:"black", marginTop: 20}}>
+                <View>
+                    <Text style={{ fontSize: 18, color: "black", marginTop: 20 }}>
                         Browse for
                     </Text>
-                    <AnimatedTabSlider/>
+                    <AnimatedTabSlider setNoteOrTutor={setNoteTutor} />
                 </View>
             </View>
-   
+            <View>
+                {(() => {
+                    if (isNoteOrTutor) {
+                        return <NotesMarket />
+                    } else {
+                        return <TutorMarket />
+                    }
+                })()}
+            </View>
+        </View>
     );
 };
 
@@ -63,7 +77,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         borderRadius: 10,
         fontSize: 20,
-        
+
     },
     div1: {
         flexDirection: "row",

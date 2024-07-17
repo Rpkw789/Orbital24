@@ -5,7 +5,7 @@ const TabsLayout = () => {
   return (
     <Tabs>
       <Tabs.Screen
-        name="NotesMarket"
+        name="homepage"
         options={{
           headerTitle: "Home Page",
           title: "Home",
@@ -22,19 +22,6 @@ const TabsLayout = () => {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" color={color} size={size} />
           ),
-        }}
-      />
-      <Tabs.Screen
-        name="editprofile"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="TutorMarket"
-        options={{
-          href: null,
-          headerTitle: "Home Page",
         }}
       />
     </Tabs>

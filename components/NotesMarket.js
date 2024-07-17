@@ -1,16 +1,13 @@
 import React, { useState, useCallback } from 'react';
-import { View, StyleSheet, ScrollView, Text, Image, TouchableOpacity} from 'react-native';
-import Homepage from '../../components/homepage';
-import { firestore } from '../../firebaseConfig';
+import { View, StyleSheet, ScrollView, Text, Image, TouchableOpacity } from 'react-native';
+import { firestore } from '../firebaseConfig';
 import { getDocs, collection } from '@firebase/firestore';
-import { useFocusEffect } from '@react-navigation/native'; 
+import { useFocusEffect } from '@react-navigation/native';
 import { useNavigation, useRoute } from '@react-navigation/native'; // Import useNavigation
 
 const NotesMarket = () => {
     const [notesData, setNotesData] = useState([]);
     const navigation = useNavigation(); // Use useNavigation hook
-    const route = useRoute();
-    const { user } = route.params;
 
     const fetchNotesData = async () => {
         try {
@@ -34,7 +31,7 @@ const NotesMarket = () => {
 
 
     const renderNote = (note) => (
-        <TouchableOpacity style={styles.placeholder} onPress={() => navigation.navigate('NotesDetails', {note})}>
+        <TouchableOpacity style={styles.placeholder} onPress={() => navigation.navigate('NotesDetails', { note })}>
             <Image source={{ uri: note.image }} style={styles.pic} />
             <Text style={styles.title}>{note.name}</Text>
             <Text style={styles.price}>{note.price}</Text>
@@ -50,8 +47,7 @@ const NotesMarket = () => {
     );
 
     return (
-        <ScrollView style={styles.container}>
-            <Homepage />
+        <ScrollView>
             {notesData.map((note, index) => (
                 index % 2 === 0 && notesData[index + 1] ? (
                     <View style={styles.lowercontainer} key={note.id}>
@@ -64,10 +60,6 @@ const NotesMarket = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#F9EDE3"
-    },
     lowercontainer: {
         padding: 10,
     },
