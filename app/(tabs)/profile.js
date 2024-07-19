@@ -12,7 +12,7 @@ const ProfilePage = () => {
     const router = useRouter();
     const [userData, setUserData] = useState(null);
     const [notes, setNotes] = useState([]);
-    const [user, setUser] = useContext(AppContext);
+    const { user } = useContext(AppContext);
 
     const fetchUserData = async () => {
         try {
@@ -49,7 +49,7 @@ const ProfilePage = () => {
     return (
         <ScrollView style={styles.container}>
             <View style={styles.editprofilebutton}>
-                <TouchableOpacity onPress={() => router.push("./editprofile")} style={styles.edit}>
+                <TouchableOpacity onPress={() => router.push("../editprofile")} style={styles.edit}>
                     <Text style={{ color: "#86A49C", textDecorationLine: 'underline', fontSize: 15 }}>
                         Edit Profile
                     </Text>

@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, TextInput, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import AnimatedTabSlider from '../../components/Tabs';
 import NotesMarket from '../../components/NotesMarket';
 import TutorMarket from '../../components/TutorMarket';
 import { useNavigation } from '@react-navigation/native';
+import { AppContext } from '../../context/userContext';
 
 const Homepage = () => {
     const [cartItemsCount, setCartItemsCount] = useState(0);
     const [chatCount, setChatCount] = useState(0);
     const [isNoteOrTutor, setNoteTutor] = useState(true);
     const navigation = useNavigation();
+    const { user } = useContext(AppContext);
 
     return (
         <View style={styles.container}>

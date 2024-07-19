@@ -14,7 +14,7 @@ export default function SignUpScreen({ }) {
 
     const auth = getAuth(app);
     const router = useRouter();
-    const { user } = useContext(AppContext);
+    const { setUser } = useContext(AppContext);
 
     const [values, setValues] = useState({
         name: "",
@@ -64,7 +64,8 @@ export default function SignUpScreen({ }) {
         const docRef = doc(firestore, 'users', user.uid);
         setDoc(docRef, {
             name: values.name,
-            role: values.role
+            role: values.role,
+            email: values.email,
         })
     }
 

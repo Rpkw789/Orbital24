@@ -21,7 +21,7 @@ export default function Loginscreen({ }) {
 
     const auth = getAuth(app);
     const router = useRouter();
-    const { user, setUser } = useContext(AppContext);
+    const { setUser } = useContext(AppContext);
 
     const [values, setValues] = useState({
         email: "",
@@ -43,8 +43,9 @@ export default function Loginscreen({ }) {
 
         signInWithEmailAndPassword(auth, email, pwd)
             .then((userCrediential) => {
-                setUser(userCrediential.user);
-                if (user.role == 'student') {
+                const signInUser = userCrediential.user;
+                setUser(signInUser);
+                if (signInUser.role == 'student') {
                     router.push('(tabs)/homepage');
                 } else {
                     router.push('(tabs)/homepage');

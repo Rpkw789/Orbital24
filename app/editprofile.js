@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import Btn from "../components/Btn";
 import { useRouter } from 'expo-router';
 import { doc, setDoc, collection, getDoc } from 'firebase/firestore';
 import { firestore } from '../firebaseConfig';
+import { AppContext } from '../context/userContext';
 
 const EditProfilePage = () => {
     const router = useRouter();
@@ -11,11 +12,12 @@ const EditProfilePage = () => {
     const [age, setAge] = useState(null);
     const [email, setEmail] = useState(null);
     const [school, setSchool] = useState(null);
+    const { user, setUser } = useContext(AppContext);
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const userDocRef = doc(collection(firestore, 'users'), "ranen");
+                const userDocRef = doc(collection(firestore, 'users'), `${user.uid}`);
                 const userDoc = await getDoc(userDocRef);
                 if (userDoc.exists()) {
                     const userData = userDoc.data();
@@ -35,7 +37,7 @@ const EditProfilePage = () => {
 
     const handleSaveChanges = async () => {
         try {
-            const userDocRef = doc(collection(firestore, 'users'), "ranen"); // Assuming userData.id is the document ID of the current user
+            const userDocRef = doc(collection(firestore, 'users'), `${user.uid}`); // Assuming userData.id is the document ID of the current user
             await setDoc(userDocRef, {
                 name: name,
                 age: age,
@@ -71,6 +73,13 @@ const EditProfilePage = () => {
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="School"
+                value={school}
+                onChangeText={setSchool}
+                keyboardType="school"
             />
             <Btn
                 onClick={handleSaveChanges}
