@@ -1,20 +1,22 @@
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/AntDesign';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import { firestore, storage } from '../../firebaseConfig';
 import { getDoc, doc, collection } from 'firebase/firestore';
 import { getPdfImage, getPdfsDownloadURLs } from '../../functions/storage';
 import { useFocusEffect } from '@react-navigation/native';
+import { AppContext } from '../../context/userContext';
 
 const ProfilePage = () => {
     const router = useRouter();
     const [userData, setUserData] = useState(null);
     const [notes, setNotes] = useState([]);
+    const [user, setUser] = useContext(AppContext);
 
     const fetchUserData = async () => {
         try {
-            const userDocRef = doc(collection(firestore, 'users'), "ranen");
+            const userDocRef = doc(collection(firestore, 'users'), `${user.uid}`);
             const userDoc = await getDoc(userDocRef);
             if (userDoc.exists()) {
                 const userData = userDoc.data();

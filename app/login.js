@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Text, View, StyleSheet } from "react-native"
 import TextBox from "../components/TextBox"
 import Btn from "../components/Btn"
 import {getAuth, signInWithEmailAndPassword} from '@firebase/auth';
 import { app } from '../firebaseConfig';
 import { useRouter } from 'expo-router';
+import { AppContext } from '@/context/userContext';
 
 const styles = StyleSheet.create({
     view: {
@@ -20,6 +21,7 @@ export default function Loginscreen({ }) {
 
     const auth = getAuth(app);
     const router = useRouter();
+    const { user, setUser } = useContext(AppContext);
 
     const [values, setValues] = useState({
         email: "",
@@ -41,7 +43,7 @@ export default function Loginscreen({ }) {
 
         signInWithEmailAndPassword(auth, email, pwd)
             .then((userCrediential) => {
-                const user = userCrediential.user;
+                setUser(userCrediential.user);
                 if (user.role == 'student') {
                     router.push('(tabs)/homepage');
                 } else {
