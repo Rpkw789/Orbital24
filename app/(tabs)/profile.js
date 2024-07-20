@@ -64,7 +64,6 @@ const ProfilePage = () => {
                 </View>
                 <View style={styles.userinfo}>
                     <Text style={styles.usertext}>Name: {userData ? userData.name : 'Loading...'}</Text>
-                    <Text style={styles.usertext}>Age: {userData ? userData.age : 'Loading...'}</Text>
                     <Text style={styles.usertext}>School: {userData ? userData.school : 'Loading...'}</Text>
                 </View>
             </View>

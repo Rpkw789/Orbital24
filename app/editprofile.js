@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import Btn from "../components/Btn";
 import { useRouter } from 'expo-router';
 import { doc, setDoc, collection, getDoc } from 'firebase/firestore';
@@ -26,7 +26,7 @@ const EditProfilePage = () => {
                     setEmail(userData.email);
                     setSchool(userData.school);
                 } else {
-                    //TO-DO
+                    Alert.alert('Error', 'Unable to find document in database')
                 }
             } catch (error) {
                 console.error('Error adding user document:', error);

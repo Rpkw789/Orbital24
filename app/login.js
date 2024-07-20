@@ -46,9 +46,9 @@ export default function Loginscreen({ }) {
                 const signInUser = userCrediential.user;
                 setUser(signInUser);
                 if (signInUser.role == 'student') {
-                    router.push('(tabs)/homepage');
+                    router.replace('(tabs)/homepage');
                 } else {
-                    router.push('(tabs)/homepage');
+                    router.replace('(tabs)/homepage');
                 }
                 
             })

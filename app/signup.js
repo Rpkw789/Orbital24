@@ -21,7 +21,8 @@ export default function SignUpScreen({ }) {
         role: "",
         email: "",
         pwd: "",
-        pwd2: ""
+        pwd2: "",
+        school: "",
     })
 
     function handleChange(text, eventName) {
@@ -42,7 +43,7 @@ export default function SignUpScreen({ }) {
 
     function SignUp() {
 
-        const { email, pwd, pwd2, name, role } = values
+        const { email, pwd, pwd2 } = values
 
         if (pwd == pwd2) {
             createUserWithEmailAndPassword(auth, email, pwd)
@@ -50,7 +51,7 @@ export default function SignUpScreen({ }) {
                     const userData = userCrediential.user;
                     setUser(userData);
                     createDatabaseFolderUser(userData);
-                    router.push('(tabs)/homepage');
+                    router.replace('(tabs)/homepage');
                 })
                 .catch((error) => {
                     alert(error.message);
@@ -66,6 +67,7 @@ export default function SignUpScreen({ }) {
             name: values.name,
             role: values.role,
             email: values.email,
+            school: values.school,
         })
     }
 
@@ -74,6 +76,7 @@ export default function SignUpScreen({ }) {
                 <Text style={{ fontSize: 34, fontWeight: "800", marginBottom: 20 }}>Sign Up</Text>
                 <TextBox placeholder="Full Name" onChangeText={text => handleChange(text, "name")} />
                 <TextBox placeholder="Email Address" onChangeText={text => handleChange(text, "email")} />
+                <TextBox placeholder="School" onChangeText={text => handleChange(text, "school")} />
                 <Picker
                     selectedValue={values.role}
                     onValueChange={(itemValue, itemIndex) => handleRoleChange(itemValue)}
