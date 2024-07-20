@@ -6,12 +6,13 @@ import NotesMarket from '../../components/NotesMarket';
 import TutorMarket from '../../components/TutorMarket';
 import { useNavigation } from '@react-navigation/native';
 import { AppContext } from '../../context/userContext';
+import { useRouter } from 'expo-router';
 
 const Homepage = () => {
     const [cartItemsCount, setCartItemsCount] = useState(0);
     const [chatCount, setChatCount] = useState(0);
     const [isNoteOrTutor, setNoteTutor] = useState(true);
-    const navigation = useNavigation();
+    const router = useRouter();
     const { user } = useContext(AppContext);
 
     return (
@@ -21,7 +22,7 @@ const Homepage = () => {
                     <TextInput placeholder='Search...' clearButtonMode='always' style={styles.searchbar} />
 
                     <View style={styles.buttonsContainer}>
-                        <TouchableOpacity style={styles.button} onPress={() => { /* Implement onPress functionality */ }}>
+                        <TouchableOpacity style={styles.button} onPress={() => { router.push('../shoppingCart')}}>
                             <Icon name="shoppingcart" size={36} color="black" />
                             {cartItemsCount > 0 && (
                                 <View style={styles.badge}>
