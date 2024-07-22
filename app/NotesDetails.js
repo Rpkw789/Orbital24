@@ -2,10 +2,34 @@ import React from 'react';
 import { View, StyleSheet, Text, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
+import { firestore } from '../firebaseConfig';
+import { doc, setDoc } from 'firebase/firestore';
+import { useContext } from 'react';
+import { AppContext } from '../context/userContext';
+
 
 const NotesDetails = () => {
     const route = useRoute();
-    const { note } = route.params;
+    const { note, isAdded } = route.params;
+    const { user } = useContext(AppContext);
+
+    const addToCart = async () => {
+        try {
+            const { uid } = user;
+            const cartItemRef = doc(firestore, `users/${uid}/cart`, note.id);
+            await setDoc(cartItemRef, {
+                name: note.name,
+                price: note.price,
+                image: note.image,
+                author: note.author,
+                description: note.description,
+                reviews: note.reviews
+            });
+            Alert.alert("Item added to cart");
+        } catch (error) {
+            Alert.alert("Error adding to cart: ", error);
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -20,9 +44,9 @@ const NotesDetails = () => {
                     <Text style={styles.smalltext}>Description</Text>
                     <Text style={styles.description}>{note.description}</Text>
                     <Text style={styles.smalltext}>Reviews</Text>
-                    <View style={{flexDirection:"row"}}>
+                    <View style={{ flexDirection: "row" }}>
                         <Text style={styles.description}>{note.reviews}</Text>
-                        <Icon name="star" color="#F7BE61" size={20} marginLeft ={5}/>
+                        <Icon name="star" color="#F7BE61" size={20} marginLeft={5} />
                     </View>
 
 
@@ -31,9 +55,15 @@ const NotesDetails = () => {
                 <View style={styles.contentSpacer} />
             </ScrollView>
             <View style={styles.buttonsContainer}>
-                <TouchableOpacity style={styles.button} onPress={() => console.log("Add to Cart pressed")}>
-                    <Text style={styles.buttonText}>Add to Cart</Text>
-                </TouchableOpacity>
+                {(() => {
+                    if (isAdded) {
+                        return;
+                    } else {
+                        return <TouchableOpacity style={styles.button} onPress={addToCart}>
+                            <Text style={styles.buttonText}>Add to Cart</Text>
+                        </TouchableOpacity>
+                    }
+                })()}
                 <TouchableOpacity style={styles.button} onPress={() => console.log("Leave a Review pressed")}>
                     <Text style={styles.buttonText}>Leave a Review</Text>
                 </TouchableOpacity>

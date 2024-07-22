@@ -8,6 +8,7 @@ import { useNavigation, useRoute } from '@react-navigation/native'; // Import us
 const NotesMarket = () => {
     const [notesData, setNotesData] = useState([]);
     const navigation = useNavigation(); // Use useNavigation hook
+    const isAdded = false;
 
     const fetchNotesData = async () => {
         try {
@@ -31,7 +32,7 @@ const NotesMarket = () => {
 
 
     const renderNote = (note) => (
-        <TouchableOpacity style={styles.placeholder} onPress={() => navigation.navigate('NotesDetails', { note })}>
+        <TouchableOpacity style={styles.placeholder} onPress={() => navigation.navigate('NotesDetails', { note, isAdded })}>
             <Image source={{ uri: note.image }} style={styles.pic} />
             <Text style={styles.title}>{note.name}</Text>
             <Text style={styles.price}>{note.price}</Text>

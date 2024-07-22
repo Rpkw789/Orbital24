@@ -51,8 +51,9 @@ const ShoppingCart = () => {
         }
     };
 
-    const handleItemPress = (item) => {
-        navigation.navigate('./NotesDetails', { item });
+    const handleItemPress = (note) => {
+        const isAdded = true;
+        navigation.navigate('NotesDetails', { note, isAdded});
     };
 
     return (
