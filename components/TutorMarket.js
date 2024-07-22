@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useFocusEffect } from 'expo-router';
-import { View, StyleSheet, ScrollView, Alert, Text } from 'react-native';
+import { View, StyleSheet, ScrollView, Text } from 'react-native';
 import TutorCard from './TutorCard';
 import SubjectCard from './SubjectCard';
 import BackButton from './BackTutorFolder';
@@ -8,7 +8,7 @@ import { firestore } from '../firebaseConfig';
 import { getDocs, collection } from '@firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 
-const TutorMarket = () => {
+const TutorMarket = ({ searchQuery }) => {
 
     const [tutorsData, setTutorsData] = useState([]);
     const [path, setPath] = useState('tutors');
@@ -74,28 +74,32 @@ const TutorMarket = () => {
         }, [])
     );
 
+    // Filter tutorsData based on searchQuery
+    const filteredTutors = tutorsData.filter(tutor => {
+        const title = tutor.level.toLowerCase().replace(/\s+/g, ' ').trim();
+        const query = searchQuery.toLowerCase().replace(/\s+/g, ' ').trim();
+        return title.includes(query);
+    });
+
     return (
         <ScrollView>
-            {(() => {
-                if (path !== 'tutors') {
-                    return <BackButton onPress={handleBack} />;
-                }
-            })()}
+            {path !== 'tutors' && <BackButton onPress={handleBack} />}
 
-            {(() => {
-                if (isTitle) {
-                    return tutorsData.map((tutor) => (
-                        <SubjectCard key={tutor.id} subject={tutor} onPress={handleSubjectPress} />
-                    ));
-                } else {
-                    return tutorsData.map((tutor) => (
-                        <TutorCard key={tutor.id} tutor={tutor} onPress={handleTutorPress} />
-                    ));
-                }
-            })()}
+            {isTitle ? (
+                filteredTutors.map((tutor) => (
+                    <SubjectCard key={tutor.id} subject={tutor} onPress={handleSubjectPress} />
+                ))
+            ) : (
+                filteredTutors.map((tutor) => (
+                    <TutorCard key={tutor.id} tutor={tutor} onPress={handleTutorPress} />
+                ))
+            )}
         </ScrollView>
-
     );
 };
+
+const styles = StyleSheet.create({
+    // Add any required styles here
+});
 
 export default TutorMarket;

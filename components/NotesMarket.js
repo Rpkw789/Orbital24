@@ -3,12 +3,11 @@ import { View, StyleSheet, ScrollView, Text, Image, TouchableOpacity } from 'rea
 import { firestore } from '../firebaseConfig';
 import { getDocs, collection } from '@firebase/firestore';
 import { useFocusEffect } from '@react-navigation/native';
-import { useNavigation, useRoute } from '@react-navigation/native'; // Import useNavigation
+import { useNavigation } from '@react-navigation/native';
 
-const NotesMarket = () => {
+const NotesMarket = ({ searchQuery }) => {
     const [notesData, setNotesData] = useState([]);
-    const navigation = useNavigation(); // Use useNavigation hook
-    const isAdded = false;
+    const navigation = useNavigation();
 
     const fetchNotesData = async () => {
         try {
@@ -30,9 +29,15 @@ const NotesMarket = () => {
         }, [])
     );
 
+    const filteredNotes = notesData.filter(note => {
+        const title = note.name.toLowerCase().replace(/\s+/g, ' ').trim();
+        const query = searchQuery.toLowerCase().replace(/\s+/g, ' ').trim();
+        console.log(`Title: ${title}, Query: ${query}`); // For debugging
+        return title.includes(query);
+    });
 
     const renderNote = (note) => (
-        <TouchableOpacity style={styles.placeholder} onPress={() => navigation.navigate('NotesDetails', { note, isAdded })}>
+        <TouchableOpacity style={styles.placeholder} onPress={() => navigation.navigate('NotesDetails', { note })} key={note.id}>
             <Image source={{ uri: note.image }} style={styles.pic} />
             <Text style={styles.title}>{note.name}</Text>
             <Text style={styles.price}>{note.price}</Text>
@@ -41,18 +46,22 @@ const NotesMarket = () => {
     );
 
     const renderRow = (note1, note2) => (
-        <View style={styles.bytwo}>
+        <View style={styles.bytwo} key={note1.id}>
             {renderNote(note1)}
-            {renderNote(note2)}
+            {note2 && renderNote(note2)}
         </View>
     );
 
     return (
         <ScrollView>
-            {notesData.map((note, index) => (
-                index % 2 === 0 && notesData[index + 1] ? (
+            {filteredNotes.map((note, index) => (
+                index % 2 === 0 && filteredNotes[index + 1] ? (
                     <View style={styles.lowercontainer} key={note.id}>
-                        {renderRow(note, notesData[index + 1])}
+                        {renderRow(note, filteredNotes[index + 1])}
+                    </View>
+                ) : (index % 2 === 0 && filteredNotes.length === index + 1) ? (
+                    <View style={styles.lowercontainer} key={note.id}>
+                        {renderRow(note, null)}
                     </View>
                 ) : null
             ))}
@@ -73,7 +82,7 @@ const styles = StyleSheet.create({
         width: '48%',
         borderWidth: 1,
         borderColor: '#ccc',
-        backgroundColor: '#fff', // Ensure there's a background color for shadow to be visible
+        backgroundColor: '#fff',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,

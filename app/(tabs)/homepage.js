@@ -12,6 +12,7 @@ const Homepage = () => {
     const [cartItemsCount, setCartItemsCount] = useState(0);
     const [chatCount, setChatCount] = useState(0);
     const [isNoteOrTutor, setNoteTutor] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
     const router = useRouter();
     const { user } = useContext(AppContext);
 
@@ -19,10 +20,16 @@ const Homepage = () => {
         <View style={styles.container}>
             <View style={styles.topdiv}>
                 <View style={styles.div1}>
-                    <TextInput placeholder='Search...' clearButtonMode='always' style={styles.searchbar} />
+                    <TextInput
+                        placeholder='Search...'
+                        clearButtonMode='always'
+                        style={styles.searchbar}
+                        value={searchQuery}
+                        onChangeText={setSearchQuery}
+                    />
 
                     <View style={styles.buttonsContainer}>
-                        <TouchableOpacity style={styles.button} onPress={() => { router.push('../shoppingCart')}}>
+                        <TouchableOpacity style={styles.button} onPress={() => { router.push('../shoppingCart') }}>
                             <Icon name="shoppingcart" size={36} color="black" />
                             {cartItemsCount > 0 && (
                                 <View style={styles.badge}>
@@ -48,15 +55,9 @@ const Homepage = () => {
                     <AnimatedTabSlider setNoteOrTutor={setNoteTutor} />
                 </View>
             </View>
-            <View>
-                {(() => {
-                    if (isNoteOrTutor) {
-                        return <NotesMarket />
-                    } else {
-                        return <TutorMarket />
-                    }
-                })()}
-            </View>
+            <ScrollView>
+                {isNoteOrTutor ? <NotesMarket searchQuery={searchQuery} /> : <TutorMarket searchQuery={searchQuery}/>}
+            </ScrollView>
         </View>
     );
 };
@@ -80,7 +81,6 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         borderRadius: 10,
         fontSize: 20,
-
     },
     div1: {
         flexDirection: "row",
@@ -88,14 +88,14 @@ const styles = StyleSheet.create({
     },
     buttonsContainer: {
         flexDirection: "row",
-        marginLeft: 5, // Pushes buttons to the end of the div1 container
+        marginLeft: 5,
     },
     button: {
         alignItems: "center",
         paddingHorizontal: 5,
         justifyContent: "center",
         flexDirection: "row",
-        marginLeft: 5, // Adjust as needed for spacing between buttons
+        marginLeft: 5,
     },
     badge: {
         backgroundColor: 'red',
