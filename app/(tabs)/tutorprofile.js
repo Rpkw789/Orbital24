@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Button } from 'react-native';
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/AntDesign';
 import React, { useState, useCallback, useContext } from 'react';
@@ -7,6 +7,7 @@ import { getDoc, doc, collection } from 'firebase/firestore';
 import { getPdfImage, getPdfsDownloadURLs } from '../../functions/storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { AppContext } from '../../context/userContext';
+import { Alert } from 'react-native';
 
 const ProfilePage = () => {
     const router = useRouter();
@@ -102,6 +103,7 @@ const ProfilePage = () => {
                         
                     </View>
                 </View>
+                <Button title='hello' onPress={() => console.log(user)}/>
             </ScrollView>
 
         </ScrollView>
