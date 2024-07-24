@@ -1,17 +1,19 @@
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useCallback, useContext } from 'react';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/AntDesign';
-import React, { useState, useCallback, useContext } from 'react';
 import { firestore, storage } from '../../firebaseConfig';
-import { getDoc, doc, collection } from 'firebase/firestore';
-import { getPdfImage, getPdfsDownloadURLs } from '../../functions/storage';
+import { getDoc, doc, collection, getDocs } from 'firebase/firestore';
+import { ref, getDownloadURL } from 'firebase/storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { AppContext } from '../../context/userContext';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 
 const ProfilePage = () => {
     const router = useRouter();
     const [userData, setUserData] = useState(null);
-    const [notes, setNotes] = useState([]);
+    const [folders, setFolders] = useState([]);
     const { user } = useContext(AppContext);
 
     const fetchUserData = async () => {
@@ -22,18 +24,22 @@ const ProfilePage = () => {
                 const userData = userDoc.data();
                 setUserData(userData);
             } else {
-                // TO-DO: Handle case where user document doesn't exist
+                console.error('User document does not exist');
             }
         } catch (error) {
             console.error('Error fetching user document:', error);
         }
     };
 
-    const fetchNotesData = async () => {
+    const fetchFoldersData = async () => {
         try {
-            const folderPath = 'gs://edusell-460f4.appspot.com/Users/ranen/notes';
-            const urls = await getPdfsDownloadURLs(folderPath);
-            setNotes(urls);
+            const foldersDocsRef = collection(firestore, `users/${user.uid}/notes storage`);
+            const foldersDocs = await getDocs(foldersDocsRef);
+            const foldersData = foldersDocs.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setFolders(foldersData);
         } catch (error) {
             console.error('Error fetching notes:', error);
         }
@@ -42,9 +48,32 @@ const ProfilePage = () => {
     useFocusEffect(
         useCallback(() => {
             fetchUserData();
-            fetchNotesData();
+            fetchFoldersData();
         }, [])
     );
+
+    const handleDownload = async (note) => {
+        try {
+            const storageRef = ref(storage, note.document);
+            const downloadURL = await getDownloadURL(storageRef);
+
+            // Define a local file path
+            const localFileUri = FileSystem.documentDirectory + note.title + (note.document.endsWith('.pdf') ? '.pdf' : '.docx');
+
+            // Download the file
+            const { uri } = await FileSystem.downloadAsync(downloadURL, localFileUri);
+
+            // Share the file
+            if (await Sharing.isAvailableAsync()) {
+                await Sharing.shareAsync(uri);
+            } else {
+                Alert.alert('Error', 'Sharing is not available on this device.');
+            }
+        } catch (error) {
+            console.error('Error downloading or opening the file:', error);
+            Alert.alert('Error', 'Failed to download or open the file.');
+        }
+    };
 
     return (
         <ScrollView style={styles.container}>
@@ -71,12 +100,11 @@ const ProfilePage = () => {
                 My notes
             </Text>
             <View>
-                {/* Display notes dynamically */}
-                {notes.map((note, index) => (
+                {folders.map((note, index) => (
                     <TouchableOpacity
                         key={index}
                         style={styles.button}
-                        onPress={() => {/* Implement onPress functionality */ }}
+                        onPress={() => handleDownload(note)}
                     >
                         <Text style={styles.foldername}>
                             {note.title}
