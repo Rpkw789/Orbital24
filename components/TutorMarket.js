@@ -83,7 +83,7 @@ const TutorMarket = ({ searchQuery }) => {
 
     return (
         <ScrollView>
-            {path !== 'tutors' && <BackButton onPress={handleBack} />}
+            {path !== 'tutors' && <BackButton onPress={handleBack}/>}
 
             {isTitle ? (
                 filteredTutors.map((tutor) => (
@@ -99,7 +99,6 @@ const TutorMarket = ({ searchQuery }) => {
 };
 
 const styles = StyleSheet.create({
-    // Add any required styles here
 });
 
 export default TutorMarket;
