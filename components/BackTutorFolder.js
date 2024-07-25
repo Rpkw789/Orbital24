@@ -11,18 +11,20 @@ const BackButton = ({ onPress }) => {
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: '#2196F3',
-        padding: 10,
-        borderRadius: 5,
-        marginHorizontal: 20,
+        backgroundColor: '#F48584',
+        padding: 5,
+        borderRadius: 10,
+        width: 100,
         alignItems: 'center',
         justifyContent: 'center',
         marginVertical: 10,
-        width: 100,
+        marginLeft: 5,
+        height: 37
     },
     text: {
         color: 'white',
-        fontSize: 16,
+        fontSize: 19,
+        fontWeight: 'bold'
     },
 });
 
