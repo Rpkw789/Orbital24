@@ -1,22 +1,15 @@
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Button } from 'react-native';
-import { useRouter } from 'expo-router';
-
+import { View, Text } from "react-native";
 import React, { useState, useCallback, useContext } from 'react';
-import { firestore, storage } from '../../firebaseConfig';
-import { getDoc, doc, collection } from 'firebase/firestore';
-import { getPdfImage, getPdfsDownloadURLs } from '../../functions/storage';
+import { getDoc, doc, collection, getDocs } from 'firebase/firestore';
+import { AppContext } from "../context/userContext";
+import { StyleSheet } from "react-native";
 import { useFocusEffect } from '@react-navigation/native';
-import { AppContext } from '../../context/userContext';
-import AnimatedTutorTabSlider from '../../components/TutorTabs';
-import Overviews from '../../components/Overview';
-import Review from '../../components/Reviews';
-import Products from '../../components/Products';
+import { firestore } from "../firebaseConfig";
 
-const ProfilePage = () => {
-    const router = useRouter();
+const Overviews = () => {
+
     const [userData, setUserData] = useState(null);
     const { user } = useContext(AppContext);
-    const [page, setPage] = useState(0);
 
     const fetchUserData = async () => {
         try {
@@ -40,41 +33,20 @@ const ProfilePage = () => {
     );
 
     return (
-        <ScrollView style={styles.container}>
-            <View style={styles.editprofilebutton}>
-                <TouchableOpacity onPress={() => router.push("../editprofile")} style={styles.edit}>
-                    <Text style={{ color: "#86A49C", textDecorationLine: 'underline', fontSize: 15 }}>
-                        Edit Profile
-                    </Text>
-                </TouchableOpacity>
+        <View>
+            <View style={{ padding: 10 }}>
+                <Text style={styles.smalltext}>Biography: </Text>
+                <Text style={styles.description}>{userData ? userData.description : ''} </Text>
+                <Text style={styles.smalltext}>Qualifications</Text>
+                <Text style={styles.description}>{userData ? userData.qualifications : ''}</Text>
+                <Text style={styles.smalltext}>Experience</Text>
+                <Text style={styles.description}>{userData ? userData.experience : ''}</Text>
             </View>
-            <View style={styles.Avatarcontainer}>
-                <View style={styles.profilepic}>
-                    <Image
-                        source={require('@/assets/images/partial-react-logo.png')}
-                        style={styles.avatarimage}
-                    />
-                </View>
-                <View style={styles.userinfo}>
-                    <Text style={styles.usertext}>{userData ? userData.name : 'Loading...'}</Text>
-                </View>
-            </View>
-            <AnimatedTutorTabSlider setPage={setPage} />
-            <ScrollView style={styles.scrollContainer}>
-                {(() => {
-                    if (page == 0) {
-                        return <Overviews />
-                    } else if (page == 1) {
-                        return <Review />
-                    } else {
-                        return <Products/>
-                    }
-                })()}
-            </ScrollView>
-
-        </ScrollView>
+        </View>
     )
-};
+}
+
+export default Overviews;
 
 const styles = StyleSheet.create({
     container: {
@@ -155,5 +127,3 @@ const styles = StyleSheet.create({
         marginBottom: 10
     }
 });
-
-export default ProfilePage;

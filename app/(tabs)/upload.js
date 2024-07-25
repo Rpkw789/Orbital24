@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
     },
     description: {
         height: 100,
+        
     },
     header: {
         fontSize: 24,
