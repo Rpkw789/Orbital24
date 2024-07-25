@@ -40,7 +40,7 @@ const NotesMarket = ({ searchQuery }) => {
         <TouchableOpacity style={styles.placeholder} onPress={() => navigation.navigate('NotesDetails', { note })} key={note.id}>
             <Image source={{ uri: note.image }} style={styles.pic} />
             <Text style={styles.title}>{note.name}</Text>
-            <Text style={styles.price}>{note.price}</Text>
+            <Text style={styles.price}>${note.price}</Text>
             <Text style={styles.author}>{note.author}</Text>
         </TouchableOpacity>
     );

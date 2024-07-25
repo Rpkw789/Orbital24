@@ -1,17 +1,19 @@
 import React from 'react';
-import { View, StyleSheet, Text, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, ScrollView, Image, TouchableOpacity, Alert } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { firestore } from '../firebaseConfig';
 import { doc, setDoc } from 'firebase/firestore';
 import { useContext } from 'react';
 import { AppContext } from '../context/userContext';
+import { useNavigation } from '@react-navigation/native';
 
 
 const NotesDetails = () => {
     const route = useRoute();
     const { note, isAdded } = route.params;
     const { user } = useContext(AppContext);
+    const navigation = useNavigation();
 
     const addToCart = async () => {
         try {
@@ -64,7 +66,7 @@ const NotesDetails = () => {
                         </TouchableOpacity>
                     }
                 })()}
-                <TouchableOpacity style={styles.button} onPress={() => console.log("Leave a Review pressed")}>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('noteReview', {note})}>
                     <Text style={styles.buttonText}>Leave a Review</Text>
                 </TouchableOpacity>
             </View>

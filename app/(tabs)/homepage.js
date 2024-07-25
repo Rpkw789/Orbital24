@@ -38,14 +38,6 @@ const Homepage = () => {
                             )}
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.button} onPress={() => { /* Implement onPress functionality */ }}>
-                            <Icon name="message1" size={30} color="black" />
-                            {chatCount > 0 && (
-                                <View style={styles.badge}>
-                                    <Text style={styles.badgeText}>{chatCount}</Text>
-                                </View>
-                            )}
-                        </TouchableOpacity>
                     </View>
                 </View>
                 <View>
