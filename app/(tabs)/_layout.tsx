@@ -23,54 +23,6 @@ const TabsLayout = () => {
           ),
         }}
       />
-      {isStudent ? (
-        <Tabs.Screen
-          name="profile"
-          options={{
-            headerTitle: "Profile",
-            title: "Profile",
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="person" color={color} size={size} />
-            ),
-          }}
-        />
-      ) : (
-        <Tabs.Screen
-          name="tutorprofile"
-          options={{
-            headerTitle: "Profile",
-            title: "Profile",
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="person" color={color} size={size} />
-            ),
-          }}
-        />
-      )}
-      {isStudent ? (
-        <Tabs.Screen
-          name="tutorprofile"
-          options={{
-            headerTitle: "Profile",
-            title: "Profile",
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="person" color={color} size={size} />
-            ),
-            href: null,
-          }}
-        />
-      ) : (
-        <Tabs.Screen
-          name="profile"
-          options={{
-            headerTitle: "Profile",
-            title: "Profile",
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="person" color={color} size={size} />
-            ),
-            href: null,
-          }}
-        />
-      )}
       {!isStudent ? (
         <Tabs.Screen
           name="upload"
@@ -90,6 +42,54 @@ const TabsLayout = () => {
             title: "Upload",
             tabBarIcon: ({ color, size }) => (
               <Ionicons name="cloud-upload-sharp" color={color} size={size} />
+            ),
+            href: null,
+          }}
+        />
+      )}
+      {isStudent ? (
+        <Tabs.Screen
+          name="profile"
+          options={{
+            headerTitle: "Profile",
+            title: "Profile",
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="person" color={color} size={size} />
+            ),
+          }}
+        />
+      ) : (
+        <Tabs.Screen
+          name="tutorprofile"
+          options={{
+            headerTitle: "Profile",
+            title: "Profile",
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="person" color={color} size={size} />
+            ),
+          }}
+        />
+      )}
+      {isStudent ? (
+        <Tabs.Screen
+          name="tutorprofile"
+          options={{
+            headerTitle: "Profile",
+            title: "Profile",
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="person" color={color} size={size} />
+            ),
+            href: null,
+          }}
+        />
+      ) : (
+        <Tabs.Screen
+          name="profile"
+          options={{
+            headerTitle: "Profile",
+            title: "Profile",
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="person" color={color} size={size} />
             ),
             href: null,
           }}

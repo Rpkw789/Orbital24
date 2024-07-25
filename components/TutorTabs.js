@@ -3,15 +3,16 @@ import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Animated } from '
 import { useRouter } from 'expo-router';
 
 const tabs = [
-  { label: 'Notes', screen: 'NotesMarket' },
-  { label: 'Tutors', screen: 'TutorMarket' },
+  { label: 'Overview'},
+  { label: 'Reviews'},
+  { label: 'Products'},
 ];
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 const { width } = Dimensions.get('window');
-const tabWidth = (width - 20) / tabs.length;
+const tabWidth = (width) / tabs.length;
 
-const AnimatedTabSlider = ({setNoteOrTutor}) => {
+const AnimatedTutorTabSlider = ({setPage}) => {
   const router = useRouter(); // Hook into router object
   const [selectedIndex, setSelectedIndex] = useState(0);
   const translateX = useState(new Animated.Value(0))[0];
@@ -26,9 +27,11 @@ const AnimatedTabSlider = ({setNoteOrTutor}) => {
     }).start(() => {
       // After animation completes, navigate to corresponding screen based on index
       if (index == 0) {
-        setNoteOrTutor(true);
+        setPage(0);
+      } else if (index == 1) {
+        setPage(1);
       } else {
-        setNoteOrTutor(false);
+        setPage(2);
       }
     });
   };
@@ -92,4 +95,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AnimatedTabSlider;
+export default AnimatedTutorTabSlider;
