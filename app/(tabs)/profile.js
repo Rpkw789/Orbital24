@@ -24,7 +24,7 @@ const ProfilePage = () => {
     const [newFolderName, setNewFolderName] = useState('');
     const [isMoveInterfaceActive, setIsMoveInterfaceActive] = useState(false);
     const animation = useState(new Animated.Value(0))[0];
-    const [selectedNote, setSelectedNote] = useState(null)
+    const [selectedNote, setSelectedNote] = useState(null);
     const [allFolders, setAllFolders] = useState([]);
 
     const fetchUserData = async () => {
@@ -58,7 +58,6 @@ const ProfilePage = () => {
 
     const fetchAllFoldersData = async () => {
         try {
-
             const foldersDocsRef = collection(firestore, `users/${user.uid}/notes storage`);
             const foldersDocs = await getDocs(foldersDocsRef);
             const foldersData = foldersDocs.docs.map(doc => ({
@@ -83,6 +82,7 @@ const ProfilePage = () => {
         useCallback(() => {
             setPath('notes storage');
             fetchUserData();
+            fetchFoldersData();
         }, [])
     );
 
@@ -122,8 +122,6 @@ const ProfilePage = () => {
         }
     };
 
-
-
     const handleCreateFolder = async () => {
         if (newFolderName.trim() === '') {
             Alert.alert('Error', 'Folder name cannot be empty.');
@@ -137,10 +135,10 @@ const ProfilePage = () => {
                 name: newFolderName,
                 title: newFolderName,
             });
-    
+
             // Move the selected note to the new folder
-            await handleMovePress(selectedNote, {id: newFolderName});
-    
+            await handleMovePress(selectedNote, { id: newFolderName });
+
             // Reset state
             setNewFolderName('');
             setIsCreatingFolder(false);
@@ -152,7 +150,7 @@ const ProfilePage = () => {
                 duration: 300,
                 useNativeDriver: true,
             }).start();
-    
+
             Alert.alert('Success', `Folder "${newFolderName}" created and note moved successfully!`);
         } catch (error) {
             console.error('Error creating folder and moving note:', error);
@@ -160,15 +158,14 @@ const ProfilePage = () => {
         }
     };
 
-
     const handleMoveDocument = (note) => {
         const defaultPath = `notes storage`;
         let fileRemainPath = path.slice(defaultPath.length) + '/' + note.id;
         if (fileRemainPath[0] == '/') {
             fileRemainPath = fileRemainPath.slice(1);
         }
-        console.log('path:',path);
-        console.log('fielRemainPath:',fileRemainPath);
+        console.log('path:', path);
+        console.log('fileRemainPath:', fileRemainPath);
         setSelectedNote({
             ...note,
             path: fileRemainPath
@@ -188,6 +185,29 @@ const ProfilePage = () => {
             duration: 300,
             useNativeDriver: true,
         }).start();
+    };
+
+    const handleDeleteItem = async (item) => {
+        try {
+            if (item.isDoc) {
+                const docRef = doc(firestore, `users/${user.uid}/notes storage/${item.id}`);
+                await deleteDoc(docRef);
+            }
+            // Get a reference to the folder document
+            const folderRef = doc(firestore, `users/${user.uid}/notes storage/${item.id}`);
+
+            // Delete the folder
+            await deleteDoc(folderRef);
+
+            // Refresh the folders list
+            fetchFoldersData();
+            fetchAllFoldersData();
+
+            Alert.alert('Success', `Item "${item.title}" deleted successfully!`);
+        } catch (error) {
+            console.error('Error deleting item:', error);
+            Alert.alert('Error', 'Failed to delete the item.');
+        }
     };
 
     const slideStyle = {
@@ -232,6 +252,11 @@ const ProfilePage = () => {
             // Optionally, refresh the folders
             fetchFoldersData();
             setIsMoveInterfaceActive(false);
+            Animated.timing(animation, {
+                toValue: 0,
+                duration: 300,
+                useNativeDriver: true,
+            }).start();
 
             Alert.alert('Success', 'Note moved successfully!');
         } catch (error) {
@@ -239,8 +264,6 @@ const ProfilePage = () => {
             Alert.alert('Error', 'Failed to move the note.');
         }
     };
-
-
 
     return (
         <ScrollView style={styles.container}>
@@ -253,14 +276,10 @@ const ProfilePage = () => {
             </View>
             <View style={styles.Avatarcontainer}>
                 <View style={styles.profilepic}>
-                    {(() => {
-                        if (userData) {
-                            return <Image
-                            source={{ uri: userData.profilepic }}
-                            style={styles.avatarimage}
-                        />
-                        }
-                    })()}
+                    <Image
+                        source={require('@/assets/images/partial-react-logo.png')}
+                        style={styles.avatarimage}
+                    />
                 </View>
                 <View style={styles.userinfo}>
                     <Text style={styles.usertext}>Name: {userData ? userData.name : 'Loading...'}</Text>
@@ -273,32 +292,34 @@ const ProfilePage = () => {
             </View>
 
             <Animated.View style={[styles.noteContainer, slideStyle]}>
-
                 {path !== 'notes storage' && <BackButton onPress={handleBack} />}
                 {folders.map((note, index) => (
-                    <TouchableOpacity
-                        key={index}
-                        style={styles.docButton}
-                        onPress={() => handlePress(note)}
-                    >
-                        {note.isDoc ? (
-                            <Icon name="filetext1" size={20} color="black" />
-                        ) : (
-                            <Icon name="folder1" size={20} color="black" />
-                        )}
-                        <Text style={styles.foldername}>
-                            {note.title}
-                        </Text>
-                        {note.isDoc ? (
-                            <TouchableOpacity onPress={() => handleMoveDocument(note)} style={styles.moveButton}>
-                                <Icon name="addfolder" size={20} color="black" />
-                            </TouchableOpacity>
-                        ) : (
-                            <View style={styles.iconContainer}>
-                                <Icon name="right" size={20} color="black" />
-                            </View>
-                        )}
-                    </TouchableOpacity>
+                    <View key={index} style={styles.docButton}>
+                        <TouchableOpacity onPress={() => handlePress(note)} style={styles.folderButton}>
+                            {note.isDoc ? (
+                                <Icon name="filetext1" size={20} color="black" />
+                            ) : (
+                                <Icon name="folder1" size={20} color="black" />
+                            )}
+                            <Text style={styles.foldername}>
+                                {note.title}
+                            </Text>
+                            <TouchableOpacity onPress={() => handleDeleteItem(note)} style={styles.moveButton}>
+                    <Icon name="delete" size={20} color="black" />
+                </TouchableOpacity>
+                            {note.isDoc ? (
+                                
+                                <TouchableOpacity onPress={() => handleMoveDocument(note)} style={styles.moveButton}>
+                                    <Icon name="addfolder" size={20} color="black" />
+                                </TouchableOpacity>
+                            ) : (
+                                <View style={styles.iconContainer}>
+                            <Icon name="right" size={20} color="black"/>
+                        </View>
+                            )}
+                        </TouchableOpacity>
+
+                    </View>
                 ))}
             </Animated.View>
             {isMoveInterfaceActive && (
@@ -313,7 +334,6 @@ const ProfilePage = () => {
                                 key={index}
                                 style={styles.moveFolderButton}
                                 onPress={() => handleMovePress(selectedNote, folder)}>
-
                                 <Text style={styles.foldername}>{folder.title}</Text>
                             </TouchableOpacity>
                         )
@@ -342,8 +362,6 @@ const ProfilePage = () => {
         </ScrollView>
     );
 };
-
-
 
 const styles = StyleSheet.create({
     container: {
@@ -393,7 +411,6 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         alignItems: "center"
     },
-
     editprofilebutton: {
         alignItems: "flex-end", // Aligns the Edit Profile button to the right
         backgroundColor: "#F5CAC2",
@@ -484,6 +501,12 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: '#F5CAC2',
         borderRadius: 5,
+        marginLeft: 5
+    },
+    deleteButton: {
+        padding: 10,
+        backgroundColor: '#FF6F6F',
+        borderRadius: 5,
     },
     iconContainer: {
         marginLeft: 'auto',
@@ -531,6 +554,11 @@ const styles = StyleSheet.create({
     createButtonText: {
         color: 'white',
         fontWeight: 'bold',
+    },
+    folderButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
     },
 });
 

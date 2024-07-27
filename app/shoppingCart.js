@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Alert } from 'react-native';
 import { firestore } from '../firebaseConfig';
-import { getDocs, collection } from '@firebase/firestore';
+import { getDocs, collection, addDoc, doc, deleteDoc } from '@firebase/firestore';
 import { AppContext } from '../context/userContext';
 import { useNavigation } from 'expo-router';
 import { Checkbox } from 'react-native-paper';
@@ -34,13 +34,47 @@ const ShoppingCart = () => {
         setSelectedItems(cartItems.map(item => item.id));
     };
 
-    const handlePurchase = () => {
+    const handlePurchase = async() => {
         if (selectedItems.length === 0) {
             Alert.alert('No items selected', 'Please select items to purchase.');
             return;
         }
-        // Handle the purchase logic here
-        Alert.alert('Purchase', `Purchased items: ${selectedItems.join(', ')}`);
+        try {
+            // Move selected items to user's notes storage
+            for (const itemId of selectedItems) {
+                const item = cartItems.find(item => item.id === itemId);
+                console.log('Fetched item data:', item);
+
+                if (item) {
+                    // Add item to notes storage
+                    const notesStorageRef = collection(firestore, `users/${user.uid}/notes storage`);
+                    await addDoc(notesStorageRef, {
+                        isDoc: true,
+                        title: item.name,
+                        document: item.document
+                    });
+
+                    // Remove item from cart
+                    const itemDocRef = doc(firestore, `users/${user.uid}/cart/${itemId}`);
+                    await deleteDoc(itemDocRef);
+                }
+            }
+        
+
+            // Refresh cart items
+            const cartDocsRef = collection(firestore, `users/${user.uid}/cart`);
+            const cartDocs = await getDocs(cartDocsRef);
+            const items = cartDocs.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setCartItems(items);
+            // Handle the purchase logic here
+            Alert.alert('Purchase', `Purchased items: ${selectedItems.join(', ')}`);
+        } catch (error) {
+            console.error('Error purchasing items:', error);
+            Alert.alert('Error', 'Failed to purchase items.');
+        }
     };
 
     const handleCheckboxPress = (item) => {
@@ -53,7 +87,7 @@ const ShoppingCart = () => {
 
     const handleItemPress = (note) => {
         const isAdded = true;
-        navigation.navigate('NotesDetails', { note, isAdded});
+        navigation.navigate('NotesDetails', { note, isAdded });
     };
 
     return (
@@ -140,17 +174,20 @@ const styles = StyleSheet.create({
     },
     buttonsContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: 10,
+        justifyContent: 'space-around',
+        marginBottom: 20,
     },
     button: {
-        backgroundColor: '#007BFF',
+        backgroundColor: '#F48584',
         padding: 10,
         borderRadius: 8,
+        height: 45,
+        justifyContent: 'center'
     },
     buttonText: {
-        color: '#fff',
+        color: 'white',
         fontWeight: 'bold',
         textAlign: 'center',
+        fontSize: 17
     },
 });

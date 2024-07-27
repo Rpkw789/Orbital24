@@ -25,7 +25,8 @@ const NotesDetails = () => {
                 image: note.image,
                 author: note.author,
                 description: note.description,
-                reviews: note.reviews
+                reviews: note.reviews,
+                document: note.document
             });
             Alert.alert("Item added to cart");
         } catch (error) {
