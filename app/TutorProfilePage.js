@@ -11,19 +11,19 @@ import { useNavigation } from '@react-navigation/native';
 
 const TutorProfilePage = () => {
     const router = useRoute();
-    const { tutor } = router.params;
+    const { tutorr } = router.params;
     const navigation = useNavigation();
 
     const handlePress = async() => {
-            navigation.navigate('tutorReview', {tutor});
+            navigation.navigate('tutorReview', {tutorr});
     }
 
     return (
         <ScrollView style={styles.container}>
-            <TutorProfileHeader tutor={tutor} />
-            <TutorQualifications qualifications={tutor.qualifications} />
-            <TutorExperience experience={tutor.experience} />
-            <TutorReviews reviews={tutor.reviews} />
+            <TutorProfileHeader tutor={tutorr} />
+            <TutorQualifications qualifications={tutorr?tutorr.qualifications:''} />
+            <TutorExperience experience={tutorr.experience} />
+            <TutorReviews reviews={tutorr.reviews} />
             {/* Other necessary components */}
             <View style={{alignItems:'center', flex: 1, justifyContent: 'center'}}>
                 <TouchableOpacity

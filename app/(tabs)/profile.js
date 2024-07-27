@@ -253,10 +253,14 @@ const ProfilePage = () => {
             </View>
             <View style={styles.Avatarcontainer}>
                 <View style={styles.profilepic}>
-                    <Image
-                        source={require('@/assets/images/partial-react-logo.png')}
-                        style={styles.avatarimage}
-                    />
+                    {(() => {
+                        if (userData) {
+                            return <Image
+                            source={{ uri: userData.profilepic }}
+                            style={styles.avatarimage}
+                        />
+                        }
+                    })()}
                 </View>
                 <View style={styles.userinfo}>
                     <Text style={styles.usertext}>Name: {userData ? userData.name : 'Loading...'}</Text>

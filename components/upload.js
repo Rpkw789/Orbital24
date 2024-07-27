@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity, Image } from 'react-native';
-import { firestore, storage } from '../../firebaseConfig';
+import { firestore, storage } from '../firebaseConfig';
 import * as DocumentPicker from 'expo-document-picker';
 import { useContext } from 'react';
-import { AppContext } from '../../context/userContext';
+import { AppContext } from '../context/userContext';
 import { ref, uploadBytes } from 'firebase/storage';
 import { doc, setDoc } from '@firebase/firestore';
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native';
 
-const UploadPage = () => {
+const UploadPage = ({setPage}) => {
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
     const [author, setAuthor] = useState('');
@@ -119,6 +119,7 @@ const UploadPage = () => {
                     <Ionicons name="cloud-upload-outline" size={24} color="white" />
                     <Text style={styles.uploadButtonText}>Upload</Text>
                 </TouchableOpacity>
+                <Button title="Go Back" onPress={() => {setPage(0)}} />
             </View>
         </ScrollView>
     );
