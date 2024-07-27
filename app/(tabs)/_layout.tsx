@@ -25,10 +25,10 @@ const TabsLayout = () => {
       />
       {!isStudent ? (
         <Tabs.Screen
-          name="upload"
+          name="publish"
           options={{
-            headerTitle: "Upload",
-            title: "Upload",
+            headerTitle: "Publish",
+            title: "Publish",
             tabBarIcon: ({ color, size }) => (
               <Ionicons name="cloud-upload-sharp" color={color} size={size} />
             ),
@@ -36,10 +36,10 @@ const TabsLayout = () => {
         />
       ) : (
         <Tabs.Screen
-          name="upload"
+          name="publish"
           options={{
-            headerTitle: "Upload",
-            title: "Upload",
+            headerTitle: "Publish",
+            title: "Publish",
             tabBarIcon: ({ color, size }) => (
               <Ionicons name="cloud-upload-sharp" color={color} size={size} />
             ),

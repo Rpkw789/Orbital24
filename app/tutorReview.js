@@ -6,7 +6,7 @@ import { collection, addDoc } from '@firebase/firestore';
 
 const tutorReview = () => {
     const router = useRoute();
-    const { tutor } = router.params;
+    const { tutorr } = router.params;
     const [rating, setRating] = useState('');
     const [review, setReview] = useState('');
 
@@ -24,7 +24,7 @@ const tutorReview = () => {
 
         try {
             // Add a new review to the 'reviews' collection
-            await addDoc(collection(firestore, `users/${tutor.id}/reviews`), {
+            await addDoc(collection(firestore, `users/${tutorr.id}/reviews`), {
                 review,
                 rating: ratingNumber,
             });
@@ -41,7 +41,7 @@ const tutorReview = () => {
     return (
         <ScrollView style={styles.container}>
             <View style={styles.innercontainer}>
-                <Text style={styles.title}> Give a review for {tutor.name}! </Text>
+                <Text style={styles.title}> Give a review for {tutorr?tutorr.name:''}! </Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Write your review here..."

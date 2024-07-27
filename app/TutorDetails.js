@@ -1,13 +1,45 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { View, StyleSheet, Text, ScrollView, Image, TouchableOpacity, Alert } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { doc, setDoc, collection, getDocs, addDoc, getDoc } from '@firebase/firestore';
+import { firestore } from '../firebaseConfig';
 
 const TutorDetails = () => {
     const route = useRoute();
     const { tutor } = route.params;
     const navigation = useNavigation();
+    const [reviews, setReviews] = useState([]);
+    const [tutorr, setTutorr] = useState(tutor)
+
+    const fetchReviewsData = async () => {
+        try {
+            const reviewsDocsRef = collection(firestore, `users/${tutor.id}/reviews`);
+            const reviewsDocs = await getDocs(reviewsDocsRef);
+            const reviewsData = reviewsDocs.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            const tutorRef = doc(collection(firestore, `users`),tutor.id);
+            const tutorDoc = await getDoc(tutorRef);
+            let tutorData = tutorDoc.data();
+            setReviews(reviewsData);
+            setTutorr({
+                ...tutor,
+                reviews: reviews,
+                ...tutorData,
+            })
+            console.log(tutorr);
+        } catch (error) {
+            console.error('Error fetching reviews:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchReviewsData();
+    },[])
 
     return (
         <View style={styles.container}>
@@ -33,7 +65,7 @@ const TutorDetails = () => {
                 <TouchableOpacity style={styles.button} onPress={() => Alert.alert("Pressed Chat with Tutor")}>
                     <Text style={styles.buttonText}>Chat with Tutor</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('TutorProfilePage', {tutor})}>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('TutorProfilePage', {tutorr})}>
                     <Text style={styles.buttonText}>Visit Tutor Profile</Text>
                 </TouchableOpacity>
             </View>
