@@ -381,7 +381,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         height: 130,
         paddingHorizontal: 20,
-        alignContent: "center"
+        alignContent: "center",
+        paddingBottom: 20
     },
     profilepic: {
         alignItems: 'center',
