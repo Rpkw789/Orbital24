@@ -328,8 +328,9 @@ const ProfilePage = () => {
                 ))}
             </Animated.View>
             {isMoveInterfaceActive && (
-                <View style={styles.moveInterface}>
-                        <TouchableOpacity onPress={handleCancelMove} style={styles.cancelMoveButton}>
+                <ScrollView style={styles.moveInterface}>
+                    <ScrollView style={styles.scrollViewContent}>
+                    <TouchableOpacity onPress={handleCancelMove} style={styles.cancelMoveButton}>
                             <Text>Back</Text>
                         </TouchableOpacity>
                         <Text style={styles.moveText}>Move to:</Text>
@@ -362,7 +363,9 @@ const ProfilePage = () => {
                                 </TouchableOpacity>
                             </View>
                         )}
-                </View>
+                    </ScrollView>
+                        
+                </ScrollView>
             )}
         </ScrollView>
     );
@@ -506,7 +509,8 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: '#F5CAC2',
         borderRadius: 5,
-        marginLeft: 5
+        marginLeft: 5,
+        justifyContent: 'center'
     },
     deleteButton: {
         padding: 10,
@@ -517,12 +521,11 @@ const styles = StyleSheet.create({
         marginLeft: 'auto',
     },
     moveInterface: {
-        position: 'absolute',
-        right: 0,
         backgroundColor: '#86A49C',
         padding: 20,
-        top: 200,
         width: '40%',
+        flex: 1,
+        flexDirection: 'column'
     },
     cancelMoveButton: {
         marginBottom: 10,
@@ -564,6 +567,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         flex: 1,
+    },
+    scrollViewContent: {
+        flexGrow: 1,
+
     },
 });
 
