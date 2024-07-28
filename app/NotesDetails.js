@@ -54,7 +54,6 @@ const NotesDetails = () => {
 
 
                 </View>
-                {/* Empty view to push content above the buttons */}
                 <View style={styles.contentSpacer} />
             </ScrollView>
             <View style={styles.buttonsContainer}>

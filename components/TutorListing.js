@@ -27,7 +27,7 @@ const Listing = ({ setPage }) => {
     ];
     const subjectsSecondary = [
         { label: 'Math', value: 1 },
-        { label: 'Biography', value: 2 },
+        { label: 'Biology', value: 2 },
         { label: 'Chemistry', value: 2 },
         { label: 'Physics', value: 2 },
         { label: 'Chinese', value: 3 },
@@ -40,7 +40,7 @@ const Listing = ({ setPage }) => {
     ];
     const subjectsJunior = [
         { label: 'Math', value: 1 },
-        { label: 'Biography', value: 2 },
+        { label: 'Biology', value: 2 },
         { label: 'Chemistry', value: 2 },
         { label: 'Physics', value: 2 },
         { label: 'Chinese', value: 3 },
@@ -78,7 +78,7 @@ const Listing = ({ setPage }) => {
     const uploadDocument = async () => {
         if (levelEdu != '' && generalSubject != '' && specialisedSubject != '' && description != '') {
             const path = `tutors/title${levelEdu}/title${levelEdu}/${generalSubject}/${generalSubject}`
-            const docRef = await addDoc(collection(firestore, `users/${user.uid}/uploadedListing`), {
+            const docRef = await setDoc(doc(firestore, `users/${user.uid}/uploadedListing`, user.uid), {
                 rate,
                 description,
                 subject: specialisedSubject,
@@ -88,7 +88,7 @@ const Listing = ({ setPage }) => {
                 level: userData.name,
                 id: user.uid,
             });
-            await setDoc(doc(firestore, path, docRef.id), {
+            await setDoc(doc(firestore, path, user.uid), {
                 rate,
                 description,
                 subject: specialisedSubject,

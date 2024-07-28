@@ -36,6 +36,7 @@ export default Publish;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#F9EDE3',
     },
     buttonContainer: {
         flexDirection: 'row',

@@ -9,7 +9,7 @@ const TutorReviews = ({ reviews }) => {
             {/* Render reviews using map */}
             {reviews.map((review, index) => (
                 <View key={index} style={styles.reviewContainer}>
-                    <Text style={styles.reviewText}>{review.text}</Text>
+                    <Text style={styles.reviewText}>{review.review}</Text>
                     <View style={styles.starContainer}>
                         {Array.from({ length: review.rating }).map((_, i) => (
                             <Icon key={i} name="star" color="#F7BE61" size={20} style={styles.starIcon} />

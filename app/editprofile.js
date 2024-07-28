@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, Modal, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, Modal, Alert, ScrollView } from 'react-native';
 import Btn from "../components/Btn";
 import { useRouter } from 'expo-router';
 import { doc, setDoc, collection, getDoc } from 'firebase/firestore';
@@ -18,7 +18,11 @@ const EditProfilePage = () => {
     const [profileImage, setProfileImage] = useState(null);
     const [profileImageWhole, setProfileImageWhole] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [role, setRole] = useState('');
     const { user, setUser } = useContext(AppContext);
+    const [description, setDescription] = useState('');
+    const [qualifications, setQualifications] = useState('');
+    const [experience, setExperience] = useState('');
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -33,6 +37,10 @@ const EditProfilePage = () => {
                     setSchool(userData.school);
                     setProfileImage(userData.profilepic);
                     setInitialPic(userData.profilepic);
+                    setDescription(userData.description);
+                    setQualifications(userData.qualifications);
+                    setExperience(userData.experience);
+                    setRole(userData.role);
                 } else {
                     Alert.alert('Error', 'Unable to find document in database')
                 }
@@ -47,7 +55,7 @@ const EditProfilePage = () => {
         if (initialPic != profileImage) {
             const response = await fetch(profileImageWhole.uri);
             const blob = await response.blob();
-            const storageRef = ref(storage, `Users/profilepic`);
+            const storageRef = ref(storage, `Users/${user.uid}`);
 
             await uploadBytes(storageRef, blob).then(async (snapshot) => {
                 console.log('Uploaded a blob or file!', snapshot);
@@ -64,10 +72,30 @@ const EditProfilePage = () => {
                 }, { merge: true });
 
                 Alert.alert('Success', 'Profile saved!');
-                router.push("./profile");
+                if (role == 'student') {
+                    router.push("./profile");
+                } else {
+                    router.push("./tutorprofile");
+                }
             });
         } else {
-            Alert.alert('Error', 'Please fill up all the details and upload the Files first.');
+            const userDocRef = doc(collection(firestore, 'users'), `${user.uid}`);
+            await setDoc(userDocRef, {
+                name: name,
+                age: age,
+                email: email,
+                school: school,
+                description: description,
+                qualifications: qualifications,
+                experience: experience,
+            }, { merge: true });
+
+            Alert.alert('Success', 'Profile saved!');
+            if (role == 'student') {
+                router.push("./profile");
+            } else {
+                router.push("./tutorprofile");
+            }
         }
     };
 
@@ -99,70 +127,97 @@ const EditProfilePage = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Edit Profile</Text>
-            <View style={styles.profileImageContainer}>
-                {profileImage && <Image source={{ uri: profileImage }} style={styles.profileImage} />}
-                <TouchableOpacity style={styles.editButton} onPress={() => setIsModalVisible(true)}>
-                    <Text style={styles.editButtonText}>Edit</Text>
-                </TouchableOpacity>
-            </View>
-            <TextInput
-                style={styles.input}
-                placeholder="Name"
-                value={name}
-                onChangeText={setName}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Age"
-                value={age}
-                onChangeText={setAge}
-                keyboardType="numeric"
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="School"
-                value={school}
-                onChangeText={setSchool}
-                keyboardType="default"
-            />
-            <Btn
-                onClick={handleSaveChanges}
-                title="Save Changes"
-                style={styles.saveButton}
-            />
-            <TouchableOpacity onPress={() => router.push("./profile")} style={styles.cancelButton}>
-                <Text style={styles.cancelButtonText}>Cancel</Text>
-            </TouchableOpacity>
-            <Modal
-                visible={isModalVisible}
-                transparent={true}
-                animationType="slide"
-                onRequestClose={() => setIsModalVisible(false)}
-            >
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
-                        <TouchableOpacity style={styles.modalButton} onPress={() => handleImagePicker('camera')}>
-                            <Text style={styles.modalButtonText}>Take Photo</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.modalButton} onPress={() => handleImagePicker('gallery')}>
-                            <Text style={styles.modalButtonText}>Choose from Gallery</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.modalButton} onPress={() => setIsModalVisible(false)}>
-                            <Text style={styles.modalButtonText}>Cancel</Text>
-                        </TouchableOpacity>
-                    </View>
+        <ScrollView>
+            <View style={styles.container}>
+                <Text style={styles.header}>Edit Profile</Text>
+                <View style={styles.profileImageContainer}>
+                    {profileImage && <Image source={{ uri: profileImage }} style={styles.profileImage} />}
+                    <TouchableOpacity style={styles.editButton} onPress={() => setIsModalVisible(true)}>
+                        <Text style={styles.editButtonText}>Edit</Text>
+                    </TouchableOpacity>
                 </View>
-            </Modal>
-        </View>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Name"
+                    value={name}
+                    onChangeText={setName}
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Age"
+                    value={age}
+                    onChangeText={setAge}
+                    keyboardType="numeric"
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Email"
+                    value={email}
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
+                />
+                {user.role != 'student' ? <><TextInput
+                    style={styles.input}
+                    placeholder="Description"
+                    value={description}
+                    onChangeText={setDescription}
+                />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Qualifications"
+                        value={qualifications}
+                        onChangeText={setQualifications}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Experience"
+                        value={experience}
+                        onChangeText={setExperience}
+                    /></> : <></>}
+
+                <TextInput
+                    style={styles.input}
+                    placeholder="School"
+                    value={school}
+                    onChangeText={setSchool}
+                    keyboardType="default"
+                />
+                <Btn
+                    onClick={handleSaveChanges}
+                    title="Save Changes"
+                    style={styles.saveButton}
+                />
+                <TouchableOpacity onPress={() => {
+                    if (role == 'student') {
+                        router.push("./profile");
+                    } else {
+                        router.push("./tutorprofile");
+                    }
+                }} style={styles.cancelButton}>
+                    <Text style={styles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
+                <Modal
+                    visible={isModalVisible}
+                    transparent={true}
+                    animationType="slide"
+                    onRequestClose={() => setIsModalVisible(false)}
+                >
+                    <View style={styles.modalContainer}>
+                        <View style={styles.modalContent}>
+                            <TouchableOpacity style={styles.modalButton} onPress={() => handleImagePicker('camera')}>
+                                <Text style={styles.modalButtonText}>Take Photo</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.modalButton} onPress={() => handleImagePicker('gallery')}>
+                                <Text style={styles.modalButtonText}>Choose from Gallery</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.modalButton} onPress={() => setIsModalVisible(false)}>
+                                <Text style={styles.modalButtonText}>Cancel</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+            </View>
+        </ScrollView>
     );
 };
 

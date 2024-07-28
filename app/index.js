@@ -30,9 +30,6 @@ const index = () => {
             <Button title="Sign up" color="#86A49C" onPress={() => router.push("./signup")} />
           </View>
         </View>
-        <View style={styles.fastButton}>
-          <Button title="skip to ur working page" color="#86A49C" onPress={() => router.push("/(tabs)/homepage")} />
-        </View>
       </ScrollView>
   );
 }
