@@ -275,13 +275,13 @@ const ProfilePage = () => {
                 </TouchableOpacity>
             </View>
             <View style={styles.Avatarcontainer}>
-            <View style={styles.profilepic}>
-                {(() => {
+                <View style={styles.profilepic}>
+                    {(() => {
                         if (userData) {
                             return <Image
-                            source={{ uri: userData.profilepic }}
-                            style={styles.avatarimage}
-                        />
+                                source={{ uri: userData.profilepic }}
+                                style={styles.avatarimage}
+                            />
                         }
                     })()}
                 </View>
@@ -310,17 +310,17 @@ const ProfilePage = () => {
                                 {note.title}
                             </Text>
                             <TouchableOpacity onPress={() => handleDeleteItem(note)} style={styles.moveButton}>
-                    <Icon name="delete" size={20} color="black" />
-                </TouchableOpacity>
+                                <Icon name="delete" size={20} color="black" />
+                            </TouchableOpacity>
                             {note.isDoc ? (
-                                
+
                                 <TouchableOpacity onPress={() => handleMoveDocument(note)} style={styles.moveButton}>
                                     <Icon name="addfolder" size={20} color="black" />
                                 </TouchableOpacity>
                             ) : (
                                 <View style={styles.iconContainer}>
-                            <Icon name="right" size={20} color="black"/>
-                        </View>
+                                    <Icon name="right" size={20} color="black" />
+                                </View>
                             )}
                         </TouchableOpacity>
 
@@ -329,39 +329,39 @@ const ProfilePage = () => {
             </Animated.View>
             {isMoveInterfaceActive && (
                 <View style={styles.moveInterface}>
-                    <TouchableOpacity onPress={handleCancelMove} style={styles.cancelMoveButton}>
-                        <Text>Back</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.moveText}>Move to:</Text>
-                    {allFolders.map((folder, index) => (
-                        !folder.isDoc && folder.id !== selectedNote.folderName && ( // Filter out documents and the folder itself
-                            <TouchableOpacity
-                                key={index}
-                                style={styles.moveFolderButton}
-                                onPress={() => handleMovePress(selectedNote, folder)}>
-                                <Text style={styles.foldername}>{folder.title}</Text>
-                            </TouchableOpacity>
-                        )
-                    ))}
-                    <TouchableOpacity
-                        onPress={() => setIsCreatingFolder(true)}
-                        style={styles.moveFolderButton}>
-                        <Text style={styles.foldername}>New folder</Text>
-                    </TouchableOpacity>
+                        <TouchableOpacity onPress={handleCancelMove} style={styles.cancelMoveButton}>
+                            <Text>Back</Text>
+                        </TouchableOpacity>
+                        <Text style={styles.moveText}>Move to:</Text>
+                        {allFolders.map((folder, index) => (
+                            !folder.isDoc && folder.id !== selectedNote.folderName && ( // Filter out documents and the folder itself
+                                <TouchableOpacity
+                                    key={index}
+                                    style={styles.moveFolderButton}
+                                    onPress={() => handleMovePress(selectedNote, folder)}>
+                                    <Text style={styles.foldername}>{folder.title}</Text>
+                                </TouchableOpacity>
+                            )
+                        ))}
+                        <TouchableOpacity
+                            onPress={() => setIsCreatingFolder(true)}
+                            style={styles.moveFolderButton}>
+                            <Text style={styles.foldername}>New folder</Text>
+                        </TouchableOpacity>
 
-                    {isCreatingFolder && (
-                        <View style={styles.createFolderContainer}>
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Folder name"
-                                value={newFolderName}
-                                onChangeText={setNewFolderName}
-                            />
-                            <TouchableOpacity onPress={handleCreateFolder} style={styles.createButton}>
-                                <Text style={styles.createButtonText}>Create and Move</Text>
-                            </TouchableOpacity>
-                        </View>
-                    )}
+                        {isCreatingFolder && (
+                            <View style={styles.createFolderContainer}>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Folder name"
+                                    value={newFolderName}
+                                    onChangeText={setNewFolderName}
+                                />
+                                <TouchableOpacity onPress={handleCreateFolder} style={styles.createButton}>
+                                    <Text style={styles.createButtonText}>Create and Move</Text>
+                                </TouchableOpacity>
+                            </View>
+                        )}
                 </View>
             )}
         </ScrollView>

@@ -4,7 +4,7 @@ import { firestore, storage } from '../firebaseConfig';
 import * as DocumentPicker from 'expo-document-picker';
 import { useContext } from 'react';
 import { AppContext } from '../context/userContext';
-import { ref, uploadBytes } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { doc, setDoc } from '@firebase/firestore';
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native';
@@ -52,8 +52,14 @@ const UploadPage = ({setPage}) => {
             const blob = await response.blob();
             const storageRef = ref(storage, `Notes/${file.name}`);
 
+            const responsep = await fetch(previewImage.uri);
+            const blobp = await responsep.blob();
+            const storageRefp = ref(storage, `Notes/${previewImage.name}`);
+
             await uploadBytes(storageRef, blob).then(async (snapshot) => {
                 console.log('Uploaded a blob or file!', snapshot);
+
+                const downloadURL = await getDownloadURL(snapshot.ref);
 
                 // Save the document details in Firestore
                 await setDoc(doc(firestore, `users/${user.uid}/uploadedNotes`, file.name), {
@@ -62,10 +68,39 @@ const UploadPage = ({setPage}) => {
                     author,
                     description,
                     uri: snapshot.metadata.fullPath,
+                    document: downloadURL,
+                    reviews: '',
                 });
+
+                await setDoc(doc(firestore, `notes`, file.name), {
+                    name,
+                    price,
+                    author,
+                    description,
+                    uri: snapshot.metadata.fullPath,
+                    document: downloadURL,
+                    reviews: '',
+                });
+
+            });
+
+            await uploadBytes(storageRefp, blobp).then(async (snapshot) => {
+                console.log('Uploaded a blob or file!', snapshot);
+
+                const downloadURL = await getDownloadURL(snapshot.ref);
+
+                // Save the document details in Firestore
+                await setDoc(doc(firestore, `users/${user.uid}/uploadedNotes`, file.name), {
+                    image: downloadURL,
+                }, { merge: true });
+
+                await setDoc(doc(firestore, `notes`, file.name), {
+                    image: downloadURL,
+                }, { merge: true });
 
                 Alert.alert('Success', 'Document uploaded successfully!');
             });
+
         } else {
             Alert.alert('Error', 'Please fill up all the details and upload the Files first.');
         }
@@ -186,6 +221,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#2196F3',
         padding: 15,
         borderRadius: 10,
+        marginBottom: 30,
     },
     uploadButtonText: {
         color: 'white',

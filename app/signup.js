@@ -6,7 +6,7 @@ import { getAuth, createUserWithEmailAndPassword } from '@firebase/auth';
 import { Picker } from '@react-native-picker/picker';
 import { app } from '../firebaseConfig'
 import { firestore } from '../firebaseConfig';
-import { doc, setDoc } from '@firebase/firestore';
+import { doc, setDoc, deleteDoc } from '@firebase/firestore';
 import { useRouter } from 'expo-router';
 import { AppContext } from '@/context/userContext';
 
@@ -61,14 +61,18 @@ export default function SignUpScreen({ }) {
         }
     }
 
-    function createDatabaseFolderUser(user) {
+    const createDatabaseFolderUser = async (user) => {
         const docRef = doc(firestore, 'users', user.uid);
-        setDoc(docRef, {
+        await setDoc(docRef, {
             name: values.name,
             role: values.role,
             email: values.email,
             school: values.school,
-        })
+            experience: '',
+            qualifications: '',
+            description: '',
+            profilepic: 'https://firebasestorage.googleapis.com/v0/b/edusell-460f4.appspot.com/o/Users%2Fdefault%2F360_F_64672736_U5kpdGs9keUll8CRQ3p3YaEv2M6qkVY5.jpg?alt=media&token=65feee19-f204-42a3-9bb2-e5ba7afc376d',
+        });
     }
 
     return (
@@ -76,7 +80,7 @@ export default function SignUpScreen({ }) {
                 <Text style={{ fontSize: 34, fontWeight: "800", marginBottom: 20 }}>Sign Up</Text>
                 <TextBox placeholder="Full Name" onChangeText={text => handleChange(text, "name")} />
                 <TextBox placeholder="Email Address" onChangeText={text => handleChange(text, "email")} />
-                <TextBox placeholder="School" onChangeText={text => handleChange(text, "school")} />
+                {values.role != 'teacher' && <TextBox placeholder="School" onChangeText={text => handleChange(text, "school")} />}
                 <Picker
                     selectedValue={values.role}
                     onValueChange={(itemValue, itemIndex) => handleRoleChange(itemValue)}

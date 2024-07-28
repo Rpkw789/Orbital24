@@ -24,11 +24,11 @@ const TutorDetails = () => {
             }));
             const tutorRef = doc(collection(firestore, `users`),tutor.id);
             const tutorDoc = await getDoc(tutorRef);
-            let tutorData = tutorDoc.data();
+            const tutorData = tutorDoc.data();
             setReviews(reviewsData);
             setTutorr({
                 ...tutor,
-                reviews: reviews,
+                reviews: reviewsData,
                 ...tutorData,
             })
             console.log(tutorr);

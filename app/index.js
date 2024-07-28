@@ -28,11 +28,9 @@ const index = () => {
               or new here?
             </Text>
           </View>
-          
           <TouchableOpacity onPress={() => router.push("./signup")} style={styles.login}>
               <Text style={styles.buttontext}>Sign up</Text>
             </TouchableOpacity>
-          
         </View>
       </ScrollView>
   );
