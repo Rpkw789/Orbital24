@@ -5,6 +5,7 @@ import { getDocs, collection, addDoc, doc, deleteDoc } from '@firebase/firestore
 import { AppContext } from '../context/userContext';
 import { useNavigation } from 'expo-router';
 import { Checkbox } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/AntDesign';
 
 const ShoppingCart = () => {
     const [cartItems, setCartItems] = useState([]);
@@ -43,7 +44,6 @@ const ShoppingCart = () => {
             // Move selected items to user's notes storage
             for (const itemId of selectedItems) {
                 const item = cartItems.find(item => item.id === itemId);
-                console.log('Fetched item data:', item);
 
                 if (item) {
                     // Add item to notes storage
@@ -59,7 +59,6 @@ const ShoppingCart = () => {
                     await deleteDoc(itemDocRef);
                 }
             }
-        
 
             // Refresh cart items
             const cartDocsRef = collection(firestore, `users/${user.uid}/cart`);
@@ -90,6 +89,26 @@ const ShoppingCart = () => {
         navigation.navigate('NotesDetails', { note, isAdded });
     };
 
+    const handleDeleteItem = async (itemId) => {
+        try {
+            // Remove item from cart
+            const itemDocRef = doc(firestore, `users/${user.uid}/cart/${itemId}`);
+            await deleteDoc(itemDocRef);
+
+            // Refresh cart items
+            const cartDocsRef = collection(firestore, `users/${user.uid}/cart`);
+            const cartDocs = await getDocs(cartDocsRef);
+            const items = cartDocs.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setCartItems(items);
+        } catch (error) {
+            console.error('Error deleting item:', error);
+            Alert.alert('Error', 'Failed to delete item.');
+        }
+    };
+
     return (
         <View style={styles.container}>
             <ScrollView>
@@ -106,6 +125,9 @@ const ShoppingCart = () => {
                                 <Text style={styles.author}>Author: {item.author}</Text>
                                 <Text style={styles.price}>Price: ${item.price}</Text>
                             </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => handleDeleteItem(item.id)}>
+                            <Icon name="delete" size={25} color="black"/>
                         </TouchableOpacity>
                     </View>
                 ))}

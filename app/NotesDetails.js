@@ -40,7 +40,7 @@ const NotesDetails = () => {
                 <Image source={{ uri: note.image }} style={styles.pic} />
                 <View style={styles.content}>
                     <Text style={styles.title}>{note.name}</Text>
-                    <Text style={{ fontSize: 27, marginBottom: 10 }}>{note.price}</Text>
+                    <Text style={{ fontSize: 27, marginBottom: 10 }}>${note.price}</Text>
                     <Text style={{ fontSize: 20, marginBottom: 10 }}>Details</Text>
                     <Text style={styles.smalltext}>Listed by</Text>
                     <Text style={styles.description}>{note.author}</Text>
