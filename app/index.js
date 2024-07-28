@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, Button, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Button, Alert, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { useRouter } from 'expo-router';
 import { useFonts } from 'expo-font';
@@ -18,20 +18,21 @@ const index = () => {
               hello!
             </Text>
           </View>
-          <View style={styles.button}>
-            <Button title="Log in" color="#86A49C" onPress={() => router.push("./login")} />
-          </View>
+          
+            <TouchableOpacity onPress={() => router.push("./login")} style={styles.login}>
+              <Text style={styles.buttontext}>Log in</Text>
+            </TouchableOpacity>
+          
           <View>
             <Text style={styles.smalltext}>
               or new here?
             </Text>
           </View>
-          <View style={styles.button}>
-            <Button title="Sign up" color="#86A49C" onPress={() => router.push("./signup")} />
-          </View>
-        </View>
-        <View style={styles.fastButton}>
-          <Button title="skip to ur working page" color="#86A49C" onPress={() => router.push("/(tabs)/homepage")} />
+          
+          <TouchableOpacity onPress={() => router.push("./signup")} style={styles.login}>
+              <Text style={styles.buttontext}>Sign up</Text>
+            </TouchableOpacity>
+          
         </View>
       </ScrollView>
   );
@@ -47,13 +48,13 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     color: "#F9EDE3"
   },
-  button: {
+  login: {
     backgroundColor: "#F5CAC2",
     marginLeft: 30,
     marginRight: 60,
     alignItems: "flex-start", // changed
+    justifyContent: "center",
     paddingLeft: 10,
-    fontSize: 40,
     borderRadius: 10,
     height: 50,
   },
@@ -80,5 +81,10 @@ const styles = StyleSheet.create({
     fontSize: 40,
     borderRadius: 10,
     height: 50,
+  },
+  buttontext: {
+    color: 'black',
+    fontSize: 17,
+
   }
 });
