@@ -68,6 +68,9 @@ const EditProfilePage = () => {
                     age: age,
                     email: email,
                     school: school,
+                    description: description,
+                    qualifications: qualifications,
+                    experience: experience,
                     profilepic: downloadURL // Save profileImage URL to Firestore
                 }, { merge: true });
 
