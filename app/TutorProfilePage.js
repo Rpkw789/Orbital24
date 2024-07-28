@@ -7,31 +7,65 @@ import TutorReviews from '../components/TutorReviews';
 import { useRoute } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { doc, setDoc, getDoc, collection } from 'firebase/firestore';
+import { firestore } from '../firebaseConfig';
+import { useContext } from 'react';
+import { AppContext } from '../context/userContext';
 
 
 const TutorProfilePage = () => {
     const router = useRoute();
     const { tutorr } = router.params;
     const navigation = useNavigation();
+    const [userData, setUser] = useState(null)
+    const { user } = useContext(AppContext);
 
-    const handlePress = async() => {
-            navigation.navigate('tutorReview', {tutorr});
+    const handlePress = async () => {
+        navigation.navigate('tutorReview', { tutorr });
     }
+
+    const fetchUserData = async () => {
+        try {
+            const userDocRef = doc(collection(firestore, 'users'), `${user.uid}`);
+            const userDoc = await getDoc(userDocRef);
+            if (userDoc.exists()) {
+                const userDatak = {
+                    uid: userDoc.id,
+                    ...userDoc.data()
+                }
+                setUser(userDatak);
+            }
+        } catch (error) {
+            console.error('Error fetching user document:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchUserData();
+    })
 
     return (
         <ScrollView style={styles.container}>
             <TutorProfileHeader tutor={tutorr} />
-            <TutorQualifications qualifications={tutorr?tutorr.qualifications:''} />
+            <TutorQualifications qualifications={tutorr ? tutorr.qualifications : ''} />
             <TutorExperience experience={tutorr.experience} />
             <TutorReviews reviews={tutorr.reviews} />
-            {/* Other necessary components */}
-            <View style={{alignItems:'center', flex: 1, justifyContent: 'center'}}>
-                <TouchableOpacity
-                    onPress={handlePress}
-                    style={styles.review}>
-                    <Text style={{fontSize: 17, color: 'black'}}>Leave a review</Text>
-                </TouchableOpacity>
-            </View>
+            {(() => {
+                if (userData) {
+                    if (userData.role != 'teacher') {
+                        return <View style={{ alignItems: 'center', flex: 1, justifyContent: 'center' }}>
+                        <TouchableOpacity
+                            onPress={handlePress}
+                            style={styles.review}>
+                            <Text style={{ fontSize: 17, color: 'black' }}>Leave a review</Text>
+                        </TouchableOpacity>
+                    </View>
+                    }
+                }
+            })()}
+            
 
         </ScrollView>
 

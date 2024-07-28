@@ -3,10 +3,12 @@ import { View, StyleSheet, Text, ScrollView, Image, TouchableOpacity, Alert } fr
 import { useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { firestore } from '../firebaseConfig';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, collection } from 'firebase/firestore';
 import { useContext } from 'react';
 import { AppContext } from '../context/userContext';
 import { useNavigation } from '@react-navigation/native';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 
 const NotesDetails = () => {
@@ -14,6 +16,7 @@ const NotesDetails = () => {
     const { note, isAdded } = route.params;
     const { user } = useContext(AppContext);
     const navigation = useNavigation();
+    const [userData, setUser] = useState(null);
 
     const addToCart = async () => {
         try {
@@ -33,6 +36,26 @@ const NotesDetails = () => {
             Alert.alert("Error adding to cart: ", error);
         }
     };
+
+    const fetchUserData = async () => {
+        try {
+            const userDocRef = doc(collection(firestore, 'users'), `${user.uid}`);
+            const userDoc = await getDoc(userDocRef);
+            if (userDoc.exists()) {
+                const userDatak = {
+                    uid: userDoc.id,
+                    ...userDoc.data()
+                }
+                setUser(userDatak);
+            }
+        } catch (error) {
+            console.error('Error fetching user document:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchUserData();
+    })
 
     return (
         <View style={styles.container}>
@@ -66,9 +89,16 @@ const NotesDetails = () => {
                         </TouchableOpacity>
                     }
                 })()}
-                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('noteReview', {note})}>
-                    <Text style={styles.buttonText}>Leave a Review</Text>
-                </TouchableOpacity>
+                {(() => {
+                    if (userData) {
+                        if (userData.role != 'teacher') {
+                            return <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('noteReview', { note })}>
+                            <Text style={styles.buttonText}>Leave a Review</Text>
+                        </TouchableOpacity>
+                        }
+                    }
+                })()}
+
             </View>
         </View>
     );
