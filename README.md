@@ -1,7 +1,11 @@
-# Welcome to your Expo app 👋
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+# Welcome to EduSell!
+This is a mobile application made using React Native with Expo.
 
-## Get started
+This app serves as a platform to purchase and sell notes. Additionally, the application allows for potential students to search for tutors on the marketplace. We used Firebase for database storage and authentication.
+
+In Collaboration with Tania Foo, for a NUS Module CP2106 - The Independent Software Development Project
+
+## To Run using Expo
 
 1. Install dependencies
 
